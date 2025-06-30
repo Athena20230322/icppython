@@ -348,7 +348,7 @@ class CertificateApiClient:
         url = "app/MemberInfo/RefreshLoginToken"
         request_payload = {
             'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-            'CellPhone': '0976100006'
+            'CellPhone': '0976100004'
         }
 
         response = self._call_normal_api(url, request_payload)

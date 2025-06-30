@@ -273,6 +273,23 @@ class CertificateApiClient:
         self._aes_key = generate_aes_result['AES_Key']
         self._aes_iv = generate_aes_result['AES_IV']
 
+        # --- 開始修改：將完整的 AES 資訊儲存為 JSON 格式 ---
+        try:
+            output_dir = "C:\\icppython"
+            os.makedirs(output_dir, exist_ok=True)
+            output_path = os.path.join(output_dir, "keyiv1.txt")
+
+            # 將解密後的 generate_aes_result 字典直接轉換為 JSON 字串並寫入檔案
+            with open(output_path, "w", encoding='utf-8') as f:
+                # 使用 json.dumps 轉換為單行 JSON 字串
+                json_string = json.dumps(generate_aes_result, ensure_ascii=False)
+                f.write(json_string)
+
+            print(f"完整的 AES 資訊已成功儲存至 (JSON 格式): {output_path}")
+        except Exception as e:
+            print(f"儲存 AES 資訊時發生錯誤: {e}")
+        # --- 結束修改 ---
+
         print(f"AES 金鑰已建立。KeyID: {self._aes_client_cert_id}")
 
     def _call_normal_api(self, base_url, action, payload):
@@ -318,7 +335,7 @@ class CertificateApiClient:
         """
         模擬 C# 的 callNormalApiL，只產生加密字串並存檔，不實際發送請求。
         """
-        output_dir = "C:\\testicashapi\\OpostData"
+        output_dir = "C:\\icppython\\OpostData"
         os.makedirs(output_dir, exist_ok=True)
 
         json_payload = json.dumps(payload, ensure_ascii=False)
@@ -343,7 +360,7 @@ class CertificateApiClient:
         self.generate_aes()
 
         # 步驟 2: 讀取簡訊驗證碼
-        auth_code_file = "C:\\icp\\authcode.txt"
+        auth_code_file = "C:\\icppython\\authcode.txt"
         try:
             with open(auth_code_file, 'r') as f:
                 auth_code = f.read().strip()
@@ -357,7 +374,7 @@ class CertificateApiClient:
         login_payload = {
             "Timestamp": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
             "LoginType": "1",
-            "UserCode": "tester187",
+            "UserCode": "tester1851",
             "UserPwd": "Aa123456",
             "SMSAuthCode": auth_code
         }

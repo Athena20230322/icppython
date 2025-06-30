@@ -342,7 +342,7 @@ class CertificateApiClient:
             login_token_id = decrypted_data.get("LoginTokenID", "").split(',')[0]
             print("LoginTokenID:", login_token_id)
 
-            output_file_path = os.path.join("C:\\icp", "logintokenid.txt")
+            output_file_path = os.path.join("C:\\icppython", "logintokenid.txt")
 
             with open(output_file_path, "w") as f:
                 f.write(login_token_id)
@@ -361,7 +361,7 @@ class CertificateApiClient:
         self.generate_aes()
 
         # 步驟 2: 從檔案讀取 LoginTokenID
-        login_token_file = "C:\\icp\\logintokenid.txt"
+        login_token_file = "C:\\icppython\\logintokenid.txt"
         try:
             with open(login_token_file, 'r') as f:
                 login_token_id = f.read().strip()
@@ -375,7 +375,7 @@ class CertificateApiClient:
         url = "app/MemberInfo/SendAuthSMS"
         request_payload = {
             "Timestamp": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-            "CellPhone": "0976100006",
+            "CellPhone": "0976100004",
             "SMSAuthType": 5,
             "UserCode": "",
             "LoginTokenID": login_token_id
@@ -391,7 +391,7 @@ class CertificateApiClient:
 
             print("AuthCode:", auth_code)
 
-            output_file_path = os.path.join("C:\\icp", "authcode.txt")
+            output_file_path = os.path.join("C:\\icppython", "authcode.txt")
 
             with open(output_file_path, "w") as f:
                 f.write(auth_code)
