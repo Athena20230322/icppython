@@ -4,12 +4,48 @@ import base64
 import os
 from datetime import datetime, timedelta
 
+# --- 開始修改 1: 匯入所需模組 ---
+import random
+import string
+# --- 結束修改 1 ---
+
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5, AES
 from Crypto.Hash import SHA256
 from Crypto.Signature import pkcs1_15
 from Crypto.Util.Padding import pad, unpad
 
+
+# --- 開始修改 2: 新增隨機字串生成函數 ---
+def generate_random_nickname(length=7):
+    """
+    生成一個指定長度的隨機英數組合字串。
+
+    Args:
+        length (int): 隨機字串的長度，預設為 7。
+
+    Returns:
+        str: 由小寫字母和數字組成的隨機字串。
+    """
+    # 定義字元來源：所有小寫字母 + 數字
+    characters = string.ascii_lowercase + string.digits
+    # 從來源中隨機選擇指定長度的字元，並組合成字串
+    return ''.join(random.choice(characters) for _ in range(length))
+
+
+# --- 結束修改 2 ---
+
+# --- 新增：用於產生隨機 Email 的函數 ---
+def generate_random_email():
+    """
+    生成一個符合格式的、以 'icp_' 開頭的隨機 Email 地址。
+    """
+    # 產生 Email 的使用者名稱部分
+    random_part = generate_random_nickname()
+    # 組合並返回完整的 Email 地址
+    return f"icp_{random_part}@example.com"
+
+# --- 修改後的 `requests_to_generate` 列表 ---
 
 class RsaCryptoHelper:
     """
@@ -273,22 +309,18 @@ class CertificateApiClient:
         self._aes_key = generate_aes_result['AES_Key']
         self._aes_iv = generate_aes_result['AES_IV']
 
-        # --- 開始修改：將完整的 AES 資訊儲存為 JSON 格式 ---
         try:
             output_dir = "C:\\icppython"
             os.makedirs(output_dir, exist_ok=True)
             output_path = os.path.join(output_dir, "keyiv1.txt")
 
-            # 將解密後的 generate_aes_result 字典直接轉換為 JSON 字串並寫入檔案
             with open(output_path, "w", encoding='utf-8') as f:
-                # 使用 json.dumps 轉換為單行 JSON 字串
                 json_string = json.dumps(generate_aes_result, ensure_ascii=False)
                 f.write(json_string)
 
             print(f"完整的 AES 資訊已成功儲存至 (JSON 格式): {output_path}")
         except Exception as e:
             print(f"儲存 AES 資訊時發生錯誤: {e}")
-        # --- 結束修改 ---
 
         print(f"AES 金鑰已建立。KeyID: {self._aes_client_cert_id}")
 
@@ -386,7 +418,6 @@ class CertificateApiClient:
         ts = lambda: datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
         # 定義所有請求的資訊 (action, payload, filename)
-        # 注意：CreateTrafficQRCode 的 payload 已移除 "Token" 欄位
         requests_to_generate = [
             ("GetAvailableBalance", {"Timestamp": ts()}, "postData2.txt"),
             ("GetMemberPaymentInfo", {"Timestamp": ts(), "MerchantID": "10512932"}, "postData3.txt"),
@@ -407,7 +438,29 @@ class CertificateApiClient:
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "100"}, "postData15.txt"),
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "501"}, "postData16.txt"),
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "1001"}, "postData17.txt"),
-            ("GetListBankInfo", {"Timestamp": ts(), "BankInfoType": "1"}, "postData18.txt")
+            ("GetListBankInfo", {"Timestamp": ts(), "BankInfoType": "1"}, "postData18.txt"),
+            # --- 開始修改 3: 動態生成 NickName ---
+            ("UpdateNickName", {"Timestamp": ts(), "NickName": generate_random_nickname()}, "postData19.txt"),
+            # --- 結束修改 3 ---
+            ("GetPasswordStatus", {"Timestamp": ts()}, "postData20.txt"),
+            # --- 修改後的行：動態生成 Email ---
+            ("UpdateEmailAddress", {"Timestamp": ts(), "Email": generate_random_email()}, "postData21.txt"),
+            ("GetWithdrawBalanceInfo", {"Timestamp": ts()}, "postData22.txt"),
+            ("SetMemberAgree", {"Timestamp": ts(), "AgreeType": "4", "AgreeStatus": "1"}, "postData23.txt"),
+            ("GetBindAccountList", {"Timestamp": ts(), "AccountType": "1"}, "postData24.txt"),
+            ("SetLoginPwdIgnorDate", {"Timestamp": ts()}, "postData25.txt"),
+            ("SetSecPwdIgnorDate", {"Timestamp": ts()}, "postData26.txt"),
+            ("SetGraphicLockIgnorDate", {"Timestamp": ts()}, "postData27.txt"),
+            ("AuthCellPhoneCarrier", {"Timestamp": ts(), "CarrierNumber": "/AAAA", "VerificationCode": "Test1234"},"postData28.txt"),
+            ("GetAccountStatusInfo", {"Timestamp": ts()}, "postData29.txt"),
+            ("QueryEinvoiceList", {"Timestamp": ts(), "EinvoicePeriod": "11304"}, "postData30.txt"),
+            ("getAppXmlSetting", {"Timestamp": ts(), "XmlVersion": "1"}, "postData31.txt"),
+            ("GetFriendInviteCounts", {"Timestamp": ts()}, "postData32.txt"),
+            ("ListFriendInviteReceive", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData33.txt"),
+            ("ListFriendInviteSend", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData34.txt"),
+            ("AddFriends", {"Timestamp": ts(), "json": {"AddWay": 0, "ArrayFriendMemberID": [2845]}}, "postData35.txt"),
+            ("QueryChatMemberByCellPhone",{"Timestamp": ts(), "ChatMemberID": "14136", "ArrayCellPhone": ["0908009004"]}, "postData36.txt")
+
         ]
 
         # 決定 API 的 base_url
@@ -415,25 +468,19 @@ class CertificateApiClient:
             base_url = self.member_base_url
             api_path = f"app/{action}"
 
-            # 根據 C# 程式碼，某些 API 是在 payment 主機上
-            # 這裡我們手動判斷，雖然 C# 原始碼並沒有這樣做，但這是更正確的做法
             if action in ["GetAvailableBalance", "GetMemberPaymentInfo", "CreateTrafficQRCode", "Payment/CreateBarcode",
                           "GetFiscHandlingCharge"]:
                 base_url = self.payment_base_url
-                # Payment/CreateBarcode 有自己的完整路徑
                 if action == "Payment/CreateBarcode":
                     api_path = action
                 else:
                     api_path = f"app/Payment/{action}"
 
-            # GetFiscHandlingCharge 也有自己的完整路徑
             if action == "GetFiscHandlingCharge":
                 api_path = f"app/TransferAccount/{action}"
 
-            # 對於 Member 相關的 API
             if base_url == self.member_base_url and not action.startswith("Payment/"):
                 api_path = f"app/MemberInfo/{action}"
-                # 特殊路徑處理
                 if action in ["GetListChannelInfo", "GetAutoTopUpInfo"]:
                     api_path = f"app/TopUpPayment/{action}"
 
@@ -444,10 +491,6 @@ class CertificateApiClient:
 if __name__ == '__main__':
     client = CertificateApiClient()
     try:
-        # ---
-        # 執行登入並產生後續請求資料的完整流程
         client.login_and_generate_requests()
-        # ---
-
     except Exception as e:
         print(f"發生錯誤：{e}")
