@@ -461,6 +461,9 @@ class CertificateApiClient:
             ("AddFriends", {"Timestamp": ts(), "json": {"AddWay": 0, "ArrayFriendMemberID": [2845]}}, "postData35.txt"),
             ("QueryChatMemberByCellPhone",{"Timestamp": ts(), "ChatMemberID": "14136", "ArrayCellPhone": ["0908009004"]}, "postData36.txt"),
             ("GetMaintainStatus", {"Timestamp": ts()}, "postData37.txt"),
+            ("ListFriends", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData38.txt"),
+            ("ListFriendsUpdate", {"Timestamp": ts(), "LastUpdateTime": "2025/01/01 00:00:00"}, "postData39.txt"),
+            ("ListDialog", {"Timestamp": ts(), "ArrayDialogID": "", "PageNo": "1", "PageSize": "10"}, "postData40.txt"),
 
         ]
 
