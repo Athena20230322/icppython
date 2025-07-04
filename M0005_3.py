@@ -459,7 +459,8 @@ class CertificateApiClient:
             ("ListFriendInviteReceive", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData33.txt"),
             ("ListFriendInviteSend", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData34.txt"),
             ("AddFriends", {"Timestamp": ts(), "json": {"AddWay": 0, "ArrayFriendMemberID": [2845]}}, "postData35.txt"),
-            ("QueryChatMemberByCellPhone",{"Timestamp": ts(), "ChatMemberID": "14136", "ArrayCellPhone": ["0908009004"]}, "postData36.txt")
+            ("QueryChatMemberByCellPhone",{"Timestamp": ts(), "ChatMemberID": "14136", "ArrayCellPhone": ["0908009004"]}, "postData36.txt"),
+            ("GetMaintainStatus", {"Timestamp": ts()}, "postData37.txt"),
 
         ]
 

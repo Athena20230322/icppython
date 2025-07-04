@@ -221,12 +221,13 @@ os.makedirs(chart_dir, exist_ok=True)
 chart_path = os.path.join(chart_dir, f"chart_{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}.png")
 fig.savefig(chart_path, bbox_inches='tight', transparent=True)  # 使用透明背景儲存
 print(f"圖表已產生: {chart_path}")
+# --- (您程式碼的其他部分...維持原樣) ---
 
 # Read the chart as a base64-encoded string for embedding
 with open(chart_path, 'rb') as f:
     chart_data = base64.b64encode(f.read()).decode()
 
-# --- 開始修改：美化 HTML 模板 ---
+# --- 開始修改：僅調整 HTML 模板中的區塊順序 ---
 # Generate the HTML report with the new structure and styles
 html_template = f"""
 <html>
@@ -258,30 +259,27 @@ html_template = f"""
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="chart-container">
-                <h2>測試結果比例</h2>
-                <img src='data:image/png;base64,{chart_data}' alt='Pass/Fail Ratio Pie Chart'/>
-            </div>
-
-            <div class="table-container">
-                <h2>詳細測試結果</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Result</th>
-                            <th>Test Script</th>
-                            <th>Duration</th>
-                            <th>Log Result</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {''.join([f'<tr><td class="status-{result.lower()}">{result}</td><td class="filepath">{os.path.basename(test)}</td><td>{duration}</td><td>{log_result}</td></tr>' for result, test, duration, log_result in test_results])}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-container">
+            <h2>詳細測試結果</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Result</th>
+                        <th>Test Script</th>
+                        <th>Duration</th>
+                        <th>Log Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {''.join([f'<tr><td class="status-{result.lower()}">{result}</td><td class="filepath">{os.path.basename(test)}</td><td>{duration}</td><td>{log_result}</td></tr>' for result, test, duration, log_result in test_results])}
+                </tbody>
+            </table>
         </div>
 
+        <div class="chart-container">
+            <h2>測試結果比例</h2>
+            <img src='data:image/png;base64,{chart_data}' alt='Pass/Fail Ratio Pie Chart'/>
+        </div>
         <div class="footer">
             <p>Report generated on {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
             <p>Thank you for reviewing the API Test Report!</p>
@@ -290,7 +288,7 @@ html_template = f"""
 </body>
 </html>
 """
-# --- 結束修改：美化 HTML 模板 ---
+# --- 結束修改：僅調整 HTML 模板中的區塊順序 ---
 
 # Save the report to a new file with a timestamp in the specified directory
 report_dir = r'C:\icppython\icploginapireport'
