@@ -435,6 +435,8 @@ class CertificateApiClient:
              "postData12.txt"),
             ("GetFinanceAD", {"Timestamp": ts(), "ADType": "0", "ADStartTime": "2021/06/08 09:44:33",
                               "ADEndTime": "2023/06/08 09:44:33"}, "postData13.txt"),
+            ("GetInsuranceAD2022", {"Timestamp": ts(), "ADType": "0", "ADStartTime": "2021/06/08 09:44:33",
+                              "ADEndTime": "2023/06/08 09:44:33"}, "postData14.txt"),
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "100"}, "postData15.txt"),
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "501"}, "postData16.txt"),
             ("GetFiscHandlingCharge", {"Timestamp": ts(), "TransferAmount": "1001"}, "postData17.txt"),
@@ -446,7 +448,8 @@ class CertificateApiClient:
             # --- 修改後的行：動態生成 Email ---
             ("UpdateEmailAddress", {"Timestamp": ts(), "Email": generate_random_email()}, "postData21.txt"),
             ("GetWithdrawBalanceInfo", {"Timestamp": ts()}, "postData22.txt"),
-            ("SetMemberAgree", {"Timestamp": ts(), "AgreeType": "4", "AgreeStatus": "1"}, "postData23.txt"),
+            ("SetMemberAgree", {"Timestamp": ts(), "AgreeItems": [{"AgreeType": "4", "AgreeStatus": "1"}]},
+             "postData23.txt"),
             ("GetBindAccountList", {"Timestamp": ts(), "AccountType": "1"}, "postData24.txt"),
             ("SetLoginPwdIgnorDate", {"Timestamp": ts()}, "postData25.txt"),
             ("SetSecPwdIgnorDate", {"Timestamp": ts()}, "postData26.txt"),
@@ -458,12 +461,18 @@ class CertificateApiClient:
             ("GetFriendInviteCounts", {"Timestamp": ts()}, "postData32.txt"),
             ("ListFriendInviteReceive", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData33.txt"),
             ("ListFriendInviteSend", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData34.txt"),
-            ("AddFriends", {"Timestamp": ts(), "json": {"AddWay": 0, "ArrayFriendMemberID": [2845]}}, "postData35.txt"),
+            ("AddFriends", {"Timestamp": ts(), "AddWay": 0, "ArrayFriendMemberID": [2845]}, "postData35.txt"),
             ("QueryChatMemberByCellPhone",{"Timestamp": ts(), "ChatMemberID": "14136", "ArrayCellPhone": ["0908009004"]}, "postData36.txt"),
             ("GetMaintainStatus", {"Timestamp": ts()}, "postData37.txt"),
             ("ListFriends", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData38.txt"),
             ("ListFriendsUpdate", {"Timestamp": ts(), "LastUpdateTime": "2025/01/01 00:00:00"}, "postData39.txt"),
             ("ListDialog", {"Timestamp": ts(), "ArrayDialogID": "", "PageNo": "1", "PageSize": "10"}, "postData40.txt"),
+            ("ListBankBranch", {"Timestamp": ts(), "BankCode": "004"}, "postData41.txt"),
+            ("ListSynNotifyMessage", {"Timestamp": ts(), "MaxNID": None, "MinNID": None, "ModifyDate": "1559723427"},"postData42.txt"),
+            ("CheckTransferReceiver", {"Timestamp": ts(), "ReceivedCName": "陳筱一", "ReceivedICPMID": "1682011000000321"}, "postData43.txt"),
+            ("ListChatMember", {"Timestamp": ts()}, "postData44.txt"),
+            ("ListBlackList", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData45.txt"),
+            ("BankAccountAuth", {"Timestamp": ts(), "BankCode": "013", "BankType": "1"}, "postData46.txt"),
 
         ]
 
