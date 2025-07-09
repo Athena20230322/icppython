@@ -473,6 +473,17 @@ class CertificateApiClient:
             ("ListChatMember", {"Timestamp": ts()}, "postData44.txt"),
             ("ListBlackList", {"Timestamp": ts(), "PageNo": "1", "PageSize": "10"}, "postData45.txt"),
             ("BankAccountAuth", {"Timestamp": ts(), "BankCode": "013", "BankType": "1"}, "postData46.txt"),
+            ("GetListOnlineBankInfo", {"Timestamp": ts()}, "postData47.txt"),
+            ("GetAD", {"Timestamp": ts(), "ADType": "0", "ADStartTime": "2021/06/08 09:44:33",
+                              "ADEndTime": "2023/06/08 09:44:33"}, "postData48.txt"),
+            ("ICash2BindList", {"Timestamp": ts()}, "postData49.txt"),
+            ("ICash2Verify", {"Timestamp": ts(), "CardNo": "7111150355008600", "Silver": "88194848"}, "postData50.txt"),
+            ("GetMainCampaignList", {"Timestamp": ts(), "isGetAll": "true"}, "postData51.txt"),
+            ("ICash2BindInfo", {"Timestamp": ts()}, "postData52.txt"),
+            ("ReAuthID", {"Timestamp": ts(), "IssueDate": "2023-06-23", "IssueLoc": "10017", "IssueType": "1"},
+             "postData53.txt"),
+
+
 
         ]
 
