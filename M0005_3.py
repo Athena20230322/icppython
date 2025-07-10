@@ -486,6 +486,8 @@ class CertificateApiClient:
             ("QueryTransferInfoByCellPhoneOrIcpmid", {"Timestamp": ts(), "QueryNo": "0977007001"}, "postData55.txt"),
             ("EditEcFriend", {"Timestamp": ts(), "EcAccount": "1682111000009639", "EcBankCode": "392", "FriendChatMID": "2846","FriendNickName":"測試第一銀行"},
              "postData56.txt"),
+            ("UpdateMemberSearchEnableStatus", {"Timestamp": ts(), "SearchEnable": "true"}, "postData57.txt"),
+            ("UpdateMemberSearchEnableStatus", {"Timestamp": ts(), "SearchEnable": "false"}, "postData58.txt"),
 
 
 
