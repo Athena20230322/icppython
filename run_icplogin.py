@@ -6,10 +6,10 @@ import time
 import sys
 import matplotlib.pyplot as plt
 
-# --- 美化 CSS 樣式 (新增 details 標籤樣式) ---
+# --- 美化 CSS 樣式 (維持不變) ---
 styles = '''
     <style>
-        /* 基本設定 */
+        /* CSS styles are unchanged, same as your provided code */
         body {
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             background-color: #f4f7f6;
@@ -17,7 +17,6 @@ styles = '''
             padding: 20px;
             color: #333;
         }
-        /* 主要容器，卡片式設計 */
         .container {
             max-width: 1200px;
             margin: auto;
@@ -26,7 +25,6 @@ styles = '''
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
-        /* 報告主標題 */
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -34,8 +32,6 @@ styles = '''
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
-
-        /* 摘要資訊區塊 (Flexbox 佈局) */
         .summary-container {
             display: flex;
             justify-content: space-around;
@@ -57,10 +53,7 @@ styles = '''
         .summary-rate { background-color: #9b59b6; }
         .summary-box h3 { margin: 0 0 10px 0; font-size: 1.2em; }
         .summary-box p { margin: 0; font-size: 2em; font-weight: bold; }
-
-        /* 主要內容區塊 (圖表與表格) */
         .main-content {
-            /* display: flex;  (不再需要 flex 佈局) */
         }
         .chart-container {
             text-align: center;
@@ -75,10 +68,8 @@ styles = '''
         }
         .table-container {
             width: 100%;
-            overflow-x: auto; /* 確保在小螢幕上表格可以水平滾動 */
+            overflow-x: auto;
         }
-
-        /* 表格樣式 */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -87,9 +78,9 @@ styles = '''
         th, td {
             padding: 12px 15px;
             text-align: left;
-            vertical-align: middle; /* 垂直置中 */
+            vertical-align: middle;
             border-bottom: 1px solid #e0e0e0;
-            word-wrap: break-word; /* 讓長字串可以換行 */
+            word-wrap: break-word;
         }
         th {
             background-color: #34495e;
@@ -104,8 +95,6 @@ styles = '''
         tr:hover {
             background-color: #e8f4f8;
         }
-
-        /* 測試結果高亮 */
         .status-pass {
             color: #27ae60;
             font-weight: bold;
@@ -125,8 +114,6 @@ styles = '''
             font-size: 0.9em;
             color: #555;
         }
-
-        /*【新功能】可摺疊日誌的樣式 */
         details {
             border: 1px solid #ddd;
             padding: 8px;
@@ -150,8 +137,6 @@ styles = '''
             border-radius: 4px;
             color: #333;
         }
-
-        /* 頁尾 */
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -162,6 +147,7 @@ styles = '''
 '''
 
 
+# --- execute_test_script 函式 (維持您原始版本，不做任何改動) ---
 def execute_test_script(script_path, test_data_dir):
     """
     執行單一測試腳本，解析其輸出，並返回標準化的結果。
@@ -226,6 +212,7 @@ def execute_test_script(script_path, test_data_dir):
     return (status, duration, log_result)
 
 
+# --- generate_html_rows 函式 (維持您原始版本，不做任何改動) ---
 def generate_html_rows(test_results):
     """
     根據測試結果產生HTML表格的行。
@@ -261,7 +248,7 @@ def main():
     """
     主執行函式
     """
-    # --- 路徑設定 ---
+    # --- 路徑設定 (維持不變) ---
     scripts_dir = 'C:\\icppython\\OTestCase\\ICPAPI'
     test_data_dir = 'C:\\icppython\\OTestData\\ICPAPI'
     report_dir = r'C:\icppython\icploginapireport'
@@ -271,12 +258,12 @@ def main():
         'C:\\icppython\\M0005_3.py'
     ]
 
-    # --- 環境檢查 ---
+    # --- 環境檢查 (維持不變) ---
     if not os.path.isdir(scripts_dir):
         print(f"錯誤：測試案例目錄不存在: {scripts_dir}")
         sys.exit(1)
 
-    # --- 前置腳本執行 ---
+    # --- 前置腳本執行 (維持不變) ---
     print("--- 正在執行前置測試腳本 ---")
     for script_path in pre_test_scripts_paths:
         try:
@@ -302,19 +289,34 @@ def main():
     scripts = [os.path.join(scripts_dir, f) for f in os.listdir(scripts_dir) if f.endswith('.py')]
     test_results = []
     print("\n--- 正在執行主要API測試案例 ---")
+
+    # ========= 【 ★★★ 本次唯一修改的區域 ★★★ 】 =========
     for script in scripts:
-        print(f"正在測試: {os.path.basename(script)}")
+        script_basename = os.path.basename(script)
+
+        # 1. 印出「正在執行」的訊息 (您原本的程式碼已有此行，這裡只是確保格式)
+        print(f"正在執行測試: {script_basename}")
+
+        # 執行腳本 (維持原樣)
         status, duration, log_result = execute_test_script(script, test_data_dir)
         test_results.append((status, script, duration, log_result))
+
+        # 2. 【新增】印出「完成測試」的結果
+        print(f"完成測試: {script_basename}, 結果: {status}")
+
+        # 3. 【新增】印出分隔線，方便閱讀
+        print("-" * 50)
+    # ========= 【 ★★★ 修改結束 ★★★ 】 =========
+
     print("--- 所有測試執行完畢 ---\n")
 
-    # --- 計算結果 ---
+    # --- 計算結果 (維持不變) ---
     pass_count = sum(1 for r in test_results if r[0] == 'Pass')
     fail_count = len(test_results) - pass_count
     total_count = len(test_results)
     pass_percentage = round(pass_count / total_count * 100, 2) if total_count > 0 else 0
 
-    # --- 產生圖表 ---
+    # --- 產生圖表 (維持不變) ---
     fig, ax = plt.subplots(figsize=(6, 6))
     if total_count > 0:
         pie_colors = ['#2ecc71', '#e74c3c']
@@ -331,10 +333,8 @@ def main():
     with open(chart_path, 'rb') as f:
         chart_data = base64.b64encode(f.read()).decode()
 
-    # --- 產生HTML報告 ---
+    # --- 產生HTML報告 (維持不變) ---
     table_rows_html = generate_html_rows(test_results)
-
-    # ---【開始修改】調整 HTML 模板，將圖表移至表格下方 ---
     html_template = f"""
     <html>
     <head>
@@ -352,7 +352,6 @@ def main():
                 <div class="summary-box summary-fail"><h3>失敗腳本</h3><p>{fail_count}</p></div>
                 <div class="summary-box summary-rate"><h3>通過比率</h3><p>{pass_percentage:.2f}%</p></div>
             </div>
-
             <div class="main-content">
                 <div class="table-container">
                     <h2>詳細測試結果</h2>
@@ -369,12 +368,10 @@ def main():
                     </table>
                 </div>
             </div>
-
             <div class="chart-container" style="margin: 40px auto 0; max-width: 600px;">
                 <h2>測試結果比例</h2>
                 <img src='data:image/png;base64,{chart_data}' alt='Pass/Fail Ratio Pie Chart'/>
             </div>
-
             <div class="footer">
                 <p>Report generated on {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
                 <p>Thank you for reviewing the API Test Report!</p>
@@ -383,9 +380,8 @@ def main():
     </body>
     </html>
     """
-    # ---【結束修改】---
 
-    # --- 儲存報告 ---
+    # --- 儲存報告 (維持不變) ---
     os.makedirs(report_dir, exist_ok=True)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     report_filename = f"report_{timestamp}.html"

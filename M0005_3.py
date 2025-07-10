@@ -482,6 +482,10 @@ class CertificateApiClient:
             ("ICash2BindInfo", {"Timestamp": ts()}, "postData52.txt"),
             ("ReAuthID", {"Timestamp": ts(), "IssueDate": "2023-06-23", "IssueLoc": "10017", "IssueType": "1"},
              "postData53.txt"),
+            ("HomeBankChkAgreedTerms", {"Timestamp": ts()}, "postData54.txt"),
+            ("QueryTransferInfoByCellPhoneOrIcpmid", {"Timestamp": ts(), "QueryNo": "0977007001"}, "postData55.txt"),
+            ("EditEcFriend", {"Timestamp": ts(), "EcAccount": "1682111000009639", "EcBankCode": "392", "FriendChatMID": "2846","FriendNickName":"測試第一銀行"},
+             "postData56.txt"),
 
 
 
