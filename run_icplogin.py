@@ -5,11 +5,12 @@ import base64
 import time
 import sys
 import matplotlib.pyplot as plt
+import re
 
-# --- 美化 CSS 樣式 (維持不變) ---
+# --- 美化 CSS 樣式 (已加入不換行規則) ---
 styles = '''
     <style>
-        /* CSS styles are unchanged, same as your provided code */
+        /* Base styles are unchanged */
         body {
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             background-color: #f4f7f6;
@@ -32,126 +33,59 @@ styles = '''
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
-        .summary-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .summary-box {
-            padding: 20px;
-            border-radius: 8px;
-            flex-grow: 1;
-            color: #fff;
-            min-width: 150px;
-        }
+        /* Other general styles remain the same */
+        .summary-container { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; text-align: center; }
+        .summary-box { padding: 20px; border-radius: 8px; flex-grow: 1; color: #fff; min-width: 150px; }
         .summary-total { background-color: #3498db; }
         .summary-pass { background-color: #2ecc71; }
         .summary-fail { background-color: #e74c3c; }
         .summary-rate { background-color: #9b59b6; }
         .summary-box h3 { margin: 0 0 10px 0; font-size: 1.2em; }
         .summary-box p { margin: 0; font-size: 2em; font-weight: bold; }
-        .main-content {
-        }
-        .chart-container {
-            text-align: center;
-            padding: 20px;
-            background: #fdfdfd;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-        .chart-container img {
-            max-width: 100%;
-            height: auto;
-        }
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            vertical-align: middle;
-            border-bottom: 1px solid #e0e0e0;
-            word-wrap: break-word;
-        }
-        th {
-            background-color: #34495e;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        tr:nth-child(even) {
-            background-color: #f8f9f9;
-        }
-        tr:hover {
-            background-color: #e8f4f8;
-        }
-        .status-pass {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        .status-fail {
-            color: #c0392b;
-            font-weight: bold;
-        }
-        tr:has(td.status-fail) {
-            background-color: #fbeaea;
-        }
-        tr:has(td.status-fail):hover {
-            background-color: #f7e1e1;
-        }
+        .main-content { }
+        .chart-container { text-align: center; padding: 20px; background: #fdfdfd; border-radius: 8px; border: 1px solid #eee; }
+        .chart-container img { max-width: 100%; height: auto; }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+        th, td { padding: 12px 15px; text-align: left; vertical-align: middle; border-bottom: 1px solid #e0e0e0; word-wrap: break-word; word-break: break-all; }
+        th { background-color: #34495e; color: white; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; }
+        tr:nth-child(even) { background-color: #f8f9f9; }
+        tr:hover { background-color: #e8f4f8; }
+        .status-pass { color: #27ae60; font-weight: bold; }
+        .status-fail { color: #c0392b; font-weight: bold; }
+        tr:has(td.status-fail) { background-color: #fbeaea; }
+        tr:has(td.status-fail):hover { background-color: #f7e1e1; }
         .filepath {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: #555;
+            line-height: 1.5;
         }
-        details {
-            border: 1px solid #ddd;
-            padding: 8px;
-            border-radius: 4px;
-            background-color: #fafafa;
-        }
-        summary {
-            font-weight: bold;
-            cursor: pointer;
-            color: #34495e;
-        }
-        details[open] {
-            padding-bottom: 10px;
-        }
-        details pre {
-            margin-top: 10px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            background-color: #f1f1f1;
-            padding: 10px;
-            border-radius: 4px;
+
+        .script-id {
             color: #333;
+            /* 【本次修改重點】增加 white-space: nowrap; 規則。*/
+            /* 這會強制瀏覽器將此部分的內容視為一個整體，絕不在其中間換行。*/
+            white-space: nowrap;
         }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
+        .script-desc {
+            display: block;
+            padding-left: 15px;
             font-size: 0.9em;
-            color: #888;
+            color: #666;
         }
+
+        details { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fafafa; }
+        summary { font-weight: bold; cursor: pointer; color: #34495e; }
+        details[open] { padding-bottom: 10px; }
+        details pre { margin-top: 10px; white-space: pre-wrap; word-wrap: break-word; background-color: #f1f1f1; padding: 10px; border-radius: 4px; color: #333; }
+        .footer { text-align: center; margin-top: 40px; font-size: 0.9em; color: #888; }
     </style>
 '''
 
 
-# --- execute_test_script 函式 (維持您原始版本，不做任何改動) ---
+# --- execute_test_script 函式 (維持不變) ---
 def execute_test_script(script_path, test_data_dir):
-    """
-    執行單一測試腳本，解析其輸出，並返回標準化的結果。
-    """
+    # ... 此函式內容完全不變 ...
     start_time = time.time()
     try:
         process = subprocess.run(
@@ -212,15 +146,28 @@ def execute_test_script(script_path, test_data_dir):
     return (status, duration, log_result)
 
 
-# --- generate_html_rows 函式 (維持您原始版本，不做任何改動) ---
+# --- generate_html_rows 函式 (維持不變) ---
 def generate_html_rows(test_results):
     """
     根據測試結果產生HTML表格的行。
+    如果腳本名稱包含中文字元，會將其拆分為編號和說明兩部分，並套用不同樣式。
     """
     rows = []
+    chinese_char_pattern = re.compile(r'[\u4e00-\u9fff]')
+
     for result, test, duration, log_result in test_results:
         status_class = result.lower()
         script_name = os.path.basename(test)
+
+        match = chinese_char_pattern.search(script_name)
+        if match:
+            split_index = match.start()
+            script_id = script_name[:split_index]
+            script_desc = script_name[split_index:]
+            formatted_script_name = (f'<span class="script-id">{script_id}</span>'
+                                     f'<span class="script-desc">{script_desc}</span>')
+        else:
+            formatted_script_name = f'<span class="script-id">{script_name}</span>'
 
         log_html = f"<td>{log_result}</td>"
         if result == 'Fail' and len(log_result) > 80:
@@ -236,7 +183,7 @@ def generate_html_rows(test_results):
         rows.append(f"""
         <tr>
             <td class="status-{status_class}">{result}</td>
-            <td class="filepath">{script_name}</td>
+            <td class="filepath">{formatted_script_name}</td>
             <td>{duration}</td>
             {log_html}
         </tr>
@@ -245,10 +192,7 @@ def generate_html_rows(test_results):
 
 
 def main():
-    """
-    主執行函式
-    """
-    # --- 路徑設定 (維持不變) ---
+    # ... 此函式內容完全不變 ...
     scripts_dir = 'C:\\icppython\\OTestCase\\ICPAPI'
     test_data_dir = 'C:\\icppython\\OTestData\\ICPAPI'
     report_dir = r'C:\icppython\icploginapireport'
@@ -258,12 +202,10 @@ def main():
         'C:\\icppython\\M0005_3.py'
     ]
 
-    # --- 環境檢查 (維持不變) ---
     if not os.path.isdir(scripts_dir):
         print(f"錯誤：測試案例目錄不存在: {scripts_dir}")
         sys.exit(1)
 
-    # --- 前置腳本執行 (維持不變) ---
     print("--- 正在執行前置測試腳本 ---")
     for script_path in pre_test_scripts_paths:
         try:
@@ -285,38 +227,25 @@ def main():
             sys.exit(1)
     print("--- 前置測試腳本執行完畢 ---")
 
-    # --- 執行主要測試 ---
     scripts = [os.path.join(scripts_dir, f) for f in os.listdir(scripts_dir) if f.endswith('.py')]
     test_results = []
     print("\n--- 正在執行主要API測試案例 ---")
 
-    # ========= 【 ★★★ 本次唯一修改的區域 ★★★ 】 =========
     for script in scripts:
         script_basename = os.path.basename(script)
-
-        # 1. 印出「正在執行」的訊息 (您原本的程式碼已有此行，這裡只是確保格式)
         print(f"正在執行測試: {script_basename}")
-
-        # 執行腳本 (維持原樣)
         status, duration, log_result = execute_test_script(script, test_data_dir)
         test_results.append((status, script, duration, log_result))
-
-        # 2. 【新增】印出「完成測試」的結果
         print(f"完成測試: {script_basename}, 結果: {status}")
-
-        # 3. 【新增】印出分隔線，方便閱讀
         print("-" * 50)
-    # ========= 【 ★★★ 修改結束 ★★★ 】 =========
 
     print("--- 所有測試執行完畢 ---\n")
 
-    # --- 計算結果 (維持不變) ---
     pass_count = sum(1 for r in test_results if r[0] == 'Pass')
     fail_count = len(test_results) - pass_count
     total_count = len(test_results)
     pass_percentage = round(pass_count / total_count * 100, 2) if total_count > 0 else 0
 
-    # --- 產生圖表 (維持不變) ---
     fig, ax = plt.subplots(figsize=(6, 6))
     if total_count > 0:
         pie_colors = ['#2ecc71', '#e74c3c']
@@ -333,7 +262,6 @@ def main():
     with open(chart_path, 'rb') as f:
         chart_data = base64.b64encode(f.read()).decode()
 
-    # --- 產生HTML報告 (維持不變) ---
     table_rows_html = generate_html_rows(test_results)
     html_template = f"""
     <html>
@@ -358,10 +286,10 @@ def main():
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 8%;">Result</th>
-                                <th style="width: 22%;">Test Script</th>
-                                <th style="width: 10%;">Duration</th>
-                                <th>Log Result</th>
+                                <th style="width: 8%;">測試結果</th>
+                                <th style="width: 22%;">測試腳本</th>
+                                <th style="width: 10%;">執行時間</th>
+                                <th>日誌訊息</th>
                             </tr>
                         </thead>
                         <tbody>{table_rows_html}</tbody>
@@ -381,7 +309,6 @@ def main():
     </html>
     """
 
-    # --- 儲存報告 (維持不變) ---
     os.makedirs(report_dir, exist_ok=True)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     report_filename = f"report_{timestamp}.html"
