@@ -3,3 +3,14 @@
 1.run_icplogin.py 登入後，執行API產出測試報告
 2.run_icpaccountclose 結清帳號，執行API即結清該帳號
 3.icploginapireport->產出報告的資料夾
+
+#ICP註冊API 執行順序
+M0003_01
+M0007
+M0010
+M0004
+M0149 檢查是否為OP會員
+M0150 註冊OP會員
+M0151 取得OP登入連結
+
+

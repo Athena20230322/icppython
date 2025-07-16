@@ -292,8 +292,6 @@ class CertificateApiClient:
             try:
                 decrypted_data_json = json.loads(decrypted_content)
 
-                # ... (此處的 LoginTokenID 處理邏輯維持不變，因為其他 API 可能會回傳它)
-
                 if 'Timestamp' in decrypted_data_json:
                     self._check_timestamp(decrypted_data_json['Timestamp'])
                 else:
@@ -302,7 +300,8 @@ class CertificateApiClient:
             except (json.JSONDecodeError, KeyError, IndexError) as e:
                 print(f"--- 處理已解密的回應時發生錯誤: {e} ---")
 
-            return response_content
+            # 【修改重點】返回解密後的內容字串，以便呼叫者進行處理
+            return decrypted_content
 
         except requests.exceptions.HTTPError as http_err:
             print(f"!!! HTTP 錯誤發生: {http_err} !!!")
@@ -316,10 +315,10 @@ class CertificateApiClient:
         """
         執行發送簡訊的 API 呼叫。
         手機號碼和 LoginTokenID 從指定檔案讀取。
+        【修改重點】成功後會將 AuthCode 寫入檔案。
         """
         self.generate_aes()
 
-        # --- 【修改重點】從檔案讀取所需參數 ---
         try:
             with open("C:\\icppython\\last_phone.txt", 'r') as f:
                 cellphone_from_file = f.read().strip()
@@ -333,29 +332,46 @@ class CertificateApiClient:
         except FileNotFoundError:
             print("!!! 錯誤: 找不到 Token 檔案 C:\\icppython\\reglogintokenid.txt !!!")
             raise
-        # --- 修改結束 ---
 
         url = "app/MemberInfo/SendAuthSMS"
         request_payload = {
             'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
             'CellPhone': cellphone_from_file,
             'LoginTokenID': token_from_file,
-            'SMSAuthType': '1'
+            'SMSAuthType': '1',
+            'UserCode':''
         }
 
-        # --- 【修改重點】更新 print 敘述以反映真實情況 ---
         print(f"正在使用從檔案讀取的手機號碼 ({cellphone_from_file}) 和 LoginTokenID ({token_from_file}) 來發送簡訊")
-        response = self._call_normal_api(url, request_payload)
+        # 【修改重點】接收解密後的回應
+        decrypted_response_str = self._call_normal_api(url, request_payload)
 
-        print("SendAuthSMS API 最終原始回應:")
-        print(response)
+        # 【修改重點】解析解密後的回應，並將 AuthCode 寫入檔案
+        if decrypted_response_str:
+            try:
+                response_data = json.loads(decrypted_response_str)
+                if 'AuthCode' in response_data:
+                    auth_code = response_data['AuthCode']
+                    file_path = "C:\\icppython\\regauthcode.txt"
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        f.write(auth_code)
+                    print(f"\n--- 成功將 AuthCode '{auth_code}' 寫入到檔案: {file_path} ---")
+                else:
+                    print("\n--- 警告: API 回應中未找到 'AuthCode' ---")
+            except json.JSONDecodeError:
+                print(f"\n!!! 錯誤: 無法解析解密後的回應 JSON: {decrypted_response_str} !!!")
+            except Exception as e:
+                print(f"\n!!! 錯誤: 寫入 AuthCode 到檔案時發生錯誤: {e} !!!")
+        else:
+            print("\n--- 警告: _call_normal_api 未返回任何解密內容 ---")
 
 
 if __name__ == '__main__':
     client = CertificateApiClient()
     try:
-        # 【修改重點】主程式現在呼叫 SendAuthSMS
         client.SendAuthSMS()
+        print(f"\n======= 程式執行成功 =======")
+
     except Exception as e:
         print(f"\n======= 程式執行失敗 =======")
         print(f"最終錯誤訊息: {e}")
