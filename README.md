@@ -13,4 +13,5 @@ M0149 檢查是否為OP會員
 M0150 註冊OP會員
 M0151 取得OP登入連結
 
+4.full_registration_flow.py SIT 執行 API 一鍵註冊
 
