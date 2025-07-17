@@ -1,4 +1,3 @@
-# C:\icppython\full_registration_flow.py (已整合 7 個 API 步驟)
 import requests
 import json
 import base64
@@ -24,6 +23,7 @@ LAST_PHONE_FILE = os.path.join(BASE_PATH, "last_phone.txt")
 LAST_IDNO_FILE = os.path.join(BASE_PATH, "last_idno.txt")
 TOKEN_FILE = os.path.join(BASE_PATH, "reglogintokenid.txt")
 AUTH_CODE_FILE = os.path.join(BASE_PATH, "regauthcode.txt")
+REGISTRATION_LOG_FILE = os.path.join(BASE_PATH, "registration_log.txt")
 
 
 # --- 共用函式 ---
@@ -196,13 +196,50 @@ class FullFlowApiClient:
 
         return decrypted_json, response_content, response_signature
 
+    def _log_registration_data(self, data_to_log):
+        """將指定的註冊資料記錄到檔案中"""
+        try:
+            os.makedirs(os.path.dirname(REGISTRATION_LOG_FILE), exist_ok=True)
+
+            # === 修改：在記錄格式中加入 CellPhone ===
+            log_entry = (
+                f"--- Execution Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ---\n"
+                f"UserCode: {data_to_log.get('UserCode', 'N/A')}\n"
+                f"UserPwd: {data_to_log.get('UserPwd', 'N/A')}\n"
+                f"CellPhone: {data_to_log.get('CellPhone', 'N/A')}\n"
+                f"Idno: {data_to_log.get('Idno', 'N/A')}\n"
+                f"ConfirmSecPwd: {data_to_log.get('ConfirmSecPwd', 'N/A')}\n"
+                f"LastAPITimestamp: {data_to_log.get('LastTimestamp', 'N/A')}\n"
+                f"--------------------------------------------------\n\n"
+            )
+
+            with open(REGISTRATION_LOG_FILE, 'a', encoding='utf-8') as f:
+                f.write(log_entry)
+
+            print(f"\n✅ 註冊資料已成功記錄至: {REGISTRATION_LOG_FILE}")
+
+        except Exception as e:
+            print(f"\n❌ 錯誤: 無法將資料寫入記錄檔: {e}")
+
     def run_full_flow(self):
         """完整執行註冊到身分驗證的流程"""
+        log_data = {}
+
         try:
             # === 準備階段：產生動態資料 ===
             user_code = f"i{int(datetime.now().timestamp())}"
             cell_phone = get_next_phone_number()
             id_no = generate_taiwan_id()
+            user_pwd = 'Aa123456'
+            confirm_sec_pwd = "246790"
+
+            # === 修改：將 CellPhone 也加入待記錄的字典 ===
+            log_data['UserCode'] = user_code
+            log_data['UserPwd'] = user_pwd
+            log_data['CellPhone'] = cell_phone
+            log_data['Idno'] = id_no
+            log_data['ConfirmSecPwd'] = confirm_sec_pwd
+
             with open(LAST_IDNO_FILE, 'w') as f:
                 f.write(id_no)
             print(f"動態資料已產生: UserCode={user_code}, CellPhone={cell_phone}, IDNo={id_no}")
@@ -215,7 +252,7 @@ class FullFlowApiClient:
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 'CellPhone': cell_phone,
                 'UserCode': user_code,
-                'UserPwd': 'Aa123456'
+                'UserPwd': user_pwd
             }
             result1, _, _ = self._call_api("app/MemberInfo/SetRegisterInfo2022", payload1)
             self._login_token_id = result1.get("LoginTokenID")
@@ -270,13 +307,11 @@ class FullFlowApiClient:
             self._call_api("app/MemberInfo/AuthIDNO", payload4)
             print("身分驗證成功。")
 
-            ### ### 新增步驟 5/6/7 ### ###
-
             # === 步驟 5: 變更交易密碼 (ChangeSecurityPwd) ===
             payload5 = {
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'ConfirmSecPwd': "246790",
-                'NewSecPwd': "246790"
+                'ConfirmSecPwd': confirm_sec_pwd,
+                'NewSecPwd': confirm_sec_pwd
             }
             self._call_api("app/MemberInfo/ChangeSecurityPwd", payload5)
             print("變更交易密碼成功。")
@@ -290,13 +325,18 @@ class FullFlowApiClient:
             print("檢查OP會員狀態成功。")
 
             # === 步驟 7: 註冊為OP會員 (RegisterOpMember) ===
+            last_api_timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            log_data['LastTimestamp'] = last_api_timestamp
+
             payload7 = {
-                'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+                'Timestamp': last_api_timestamp,
                 'CellPhone': cell_phone,
                 'Birthday': "20000101"
             }
             self._call_api("app/MemberInfo/RegisterOpMember", payload7)
             print("註冊OP會員成功。")
+
+            self._log_registration_data(log_data)
 
             print("\n======= ✅ 全部 7 個步驟流程執行成功！ ✅ =======")
 
