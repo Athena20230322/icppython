@@ -8,18 +8,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-# --- ✨ 修改 Capabilities ✨ ---
+# --- ✨ Capabilities 設定 ✨ ---
 capabilities = {
     "platformName": "Android",
     "appium:platformVersion": "11",
     "appium:deviceName": "emulator-5554",
     "appium:appPackage": "tw.com.icash.a.icashpay.debuging",
-    # 1. 移除 appActivity，讓 App 自行啟動
-    # "appium:appActivity": "tw.com.icash.icashpay.framework.home.HomeActivity",
     "appium:noReset": True,
     "appium:automationName": "UiAutomator2",
     "appium:allowSecureScreenshots": True,
-    # 2. 新增 autoGrantPermissions，自動處理權限彈窗
     "appium:autoGrantPermissions": True,
 }
 # -----------------------------
@@ -27,9 +24,9 @@ capabilities = {
 appium_options = UiAutomator2Options().load_capabilities(capabilities)
 APPIUM_SERVER_URL = 'http://127.0.0.1:4723'
 
-# --- ✨ 新增：設定檔案路徑和讀取/產生註冊資料 ✨ ---
+# --- ✨ 設定檔案路徑和讀取/產生註冊資料 ✨ ---
 INFO_FILE_PATH = r"C:\icppython\icashpayappinfo.txt"
-DEFAULT_START_PHONE = "0960000100"
+DEFAULT_START_PHONE = "0960000102" # 您在程式碼中更新了起始號碼，這裡保持一致
 
 def get_next_registration_info(file_path):
     """
@@ -45,14 +42,15 @@ def get_next_registration_info(file_path):
             if lines:
                 # 讀取最後一行的手機號碼
                 last_line = lines[-1].strip()
-                last_phone = last_line.split(',')[0].strip()
+                if last_line: # 確保最後一行不是空的
+                    last_phone = last_line.split(',')[0].strip()
     except FileNotFoundError:
         print(f"找不到紀錄檔 {file_path}，將使用預設起始門號。")
     except Exception as e:
         print(f"讀取檔案時發生錯誤: {e}，將使用預設起始門號。")
 
-    # 手機號碼 +1
-    next_phone_number = str(int(last_phone) + 1)
+    # 手機號碼 +1 並使用 zfill(10) 補足10位數
+    next_phone_number = str(int(last_phone) + 1).zfill(10)
 
     # 產生新的登入帳號 (ic + timestamp)
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -81,7 +79,6 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         print(f"本次使用門號: {next_phone}")
         print(f"本次使用帳號: {new_account}")
 
-        # 後續的測試步驟完全不變
         print("\n步驟 1: 等待並點擊 '付款碼' 按鈕...")
         payment_code_button = WebDriverWait(driver, 20).until(
             EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/home_text"))
@@ -107,12 +104,10 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         phone_field = WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/user_phones_text"))
         )
-        # --- ✨ 修改：使用動態產生的手機號碼 ✨ ---
         phone_field.send_keys(next_phone)
         print(f" -> 已輸入手機號碼: {next_phone}")
 
         account_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_code_text")
-        # --- ✨ 修改：使用動態產生的登入帳號 ✨ ---
         account_field.send_keys(new_account)
         print(f" -> 已輸入登入帳號: {new_account}")
 
@@ -130,11 +125,15 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
             checkbox.click()
         print(f" -> 已勾選 {len(checkboxes)} 個同意條款")
 
-        next_step_button = driver.find_element(by=AppiumBy.XPATH, value="//android.widget.Button[@text='下一步']")
+        # --- 💡 修正：改用更穩定的 resource-id 來定位「下一步」按鈕 ---
+        print(" -> 等待 '下一步' 按鈕...")
+        next_step_button = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/leftButton"))
+        )
         next_step_button.click()
         print(" -> 已點擊下一步")
 
-        # --- ✨ 新增：寫入本次使用的資料到檔案中 ✨ ---
+        # 寫入本次使用的資料到檔案中
         write_registration_info(INFO_FILE_PATH, next_phone, new_account)
 
         print("\n測試流程執行完畢！ ✅")
