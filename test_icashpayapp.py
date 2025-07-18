@@ -1,4 +1,6 @@
 import time
+import os
+from datetime import datetime
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from appium.webdriver.common.appiumby import AppiumBy
@@ -25,12 +27,62 @@ capabilities = {
 appium_options = UiAutomator2Options().load_capabilities(capabilities)
 APPIUM_SERVER_URL = 'http://127.0.0.1:4723'
 
+# --- ✨ 新增：設定檔案路徑和讀取/產生註冊資料 ✨ ---
+INFO_FILE_PATH = r"C:\icppython\icashpayappinfo.txt"
+DEFAULT_START_PHONE = "0960000100"
+
+def get_next_registration_info(file_path):
+    """
+    讀取紀錄檔，產生下一個手機號碼和新的登入帳號。
+    """
+    # 確保資料夾存在
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    last_phone = DEFAULT_START_PHONE
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            if lines:
+                # 讀取最後一行的手機號碼
+                last_line = lines[-1].strip()
+                last_phone = last_line.split(',')[0].strip()
+    except FileNotFoundError:
+        print(f"找不到紀錄檔 {file_path}，將使用預設起始門號。")
+    except Exception as e:
+        print(f"讀取檔案時發生錯誤: {e}，將使用預設起始門號。")
+
+    # 手機號碼 +1
+    next_phone_number = str(int(last_phone) + 1)
+
+    # 產生新的登入帳號 (ic + timestamp)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    new_account_name = f"ic{timestamp}"
+
+    return next_phone_number, new_account_name
+
+def write_registration_info(file_path, phone, account):
+    """
+    將本次使用的手機號碼和登入帳號寫入檔案。
+    """
+    try:
+        with open(file_path, "a", encoding="utf-8") as f:
+            f.write(f"{phone},{account}\n")
+        print(f"\n -> 已成功將資料寫入: {file_path}")
+    except Exception as e:
+        print(f"\n -> 寫入檔案時發生錯誤: {e}")
+
+# 在連線前準備好這次要用的資料
+next_phone, new_account = get_next_registration_info(INFO_FILE_PATH)
+# ----------------------------------------------------
+
 with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
     try:
         print("連線成功！開始執行測試步驟...")
+        print(f"本次使用門號: {next_phone}")
+        print(f"本次使用帳號: {new_account}")
 
         # 後續的測試步驟完全不變
-        print("步驟 1: 等待並點擊 '付款碼' 按鈕...")
+        print("\n步驟 1: 等待並點擊 '付款碼' 按鈕...")
         payment_code_button = WebDriverWait(driver, 20).until(
             EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/home_text"))
         )
@@ -55,12 +107,14 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         phone_field = WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/user_phones_text"))
         )
-        phone_field.send_keys("0912345678")
-        print(" -> 已輸入手機號碼")
+        # --- ✨ 修改：使用動態產生的手機號碼 ✨ ---
+        phone_field.send_keys(next_phone)
+        print(f" -> 已輸入手機號碼: {next_phone}")
 
         account_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_code_text")
-        account_field.send_keys("testaccount01")
-        print(" -> 已輸入登入帳號")
+        # --- ✨ 修改：使用動態產生的登入帳號 ✨ ---
+        account_field.send_keys(new_account)
+        print(f" -> 已輸入登入帳號: {new_account}")
 
         password_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_pwd_text")
         password_field.send_keys("Aa123456")
@@ -79,6 +133,9 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         next_step_button = driver.find_element(by=AppiumBy.XPATH, value="//android.widget.Button[@text='下一步']")
         next_step_button.click()
         print(" -> 已點擊下一步")
+
+        # --- ✨ 新增：寫入本次使用的資料到檔案中 ✨ ---
+        write_registration_info(INFO_FILE_PATH, next_phone, new_account)
 
         print("\n測試流程執行完畢！ ✅")
         time.sleep(5)
