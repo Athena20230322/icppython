@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "caps": [
+    {
+      "type": "text",
+      "name": "platformName",
+      "value": "Android"
+    },
+    {
+      "type": "text",
+      "name": "appium:platformVersion",
+      "value": "11"
+    },
+    {
+      "type": "text",
+      "name": "appium:deviceName",
+      "value": "emulator-5554"
+    },
+    {
+      "type": "text",
+      "name": "appium:appPackage",
+      "value": "tw.com.icash.a.icashpay.debuging"
+    },
+    {
+      "type": "boolean",
+      "name": "appium:noReset",
+      "value": true
+    },
+    {
+      "type": "text",
+      "name": "appium:appWaitActivity",
+      "value": "*"
+    },
+    {
+      "type": "text",
+      "name": "appium:automationName",
+      "value": "UiAutomator2"
+    },
+    {
+      "type": "boolean",
+      "name": "appium:allowSecureScreenshots",
+      "value": true
+    }
+  ],
+  "server": {
+    "local": {},
+    "remote": {
+      "path": "",
+      "port": "4723"
+    },
+    "sauce": {
+      "dataCenter": "us-west-1"
+    },
+    "headspin": {},
+    "browserstack": {},
+    "lambdatest": {},
+    "advanced": {
+      "allowUnauthorized": false
+    },
+    "bitbar": {},
+    "kobiton": {},
+    "perfecto": {},
+    "pcloudy": {},
+    "testingbot": {},
+    "experitest": {},
+    "roboticmobi": {},
+    "remotetestkit": {}
+  },
+  "serverType": "remote",
+  "visibleProviders": []
+}
