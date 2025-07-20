@@ -142,6 +142,28 @@ def swipe_by_coordinates(driver, x, start_y, end_y, swipes=1):
             pass
 
 
+# --- ✨ 新增：透過 Keycode 輸入 PIN 碼的輔助函式 ✨ ---
+def enter_pin_by_keycode(driver, pin):
+    """
+    使用 Android Keycode 來輸入數字 PIN 碼。
+
+    :param driver: Appium driver 物件
+    :param pin: 要輸入的 PIN 碼字串, e.g., "246790"
+    """
+    # Android 數字 Keycode 對照表
+    # KEYCODE_0=7, KEYCODE_1=8, ..., KEYCODE_9=16
+    keycode_map = {str(i): i + 7 for i in range(10)}
+
+    print(f"    -> 準備使用 Keycode 輸入 PIN: {pin}")
+    for digit in pin:
+        if digit in keycode_map:
+            driver.press_keycode(keycode_map[digit])
+            print(f"      -> 已輸入數字: {digit}")
+            time.sleep(0.2)  # 模擬輸入間隔
+        else:
+            print(f"      -> 警告：字元 '{digit}' 不是有效的數字，已略過。")
+
+
 # --- ✨ 在執行測試前，就先產生並寫入新資料 (維持不變) ✨ ---
 print("步驟 0: 準備新的註冊資料並預先寫入紀錄檔...")
 next_phone, new_account = get_next_registration_info(INFO_FILE_PATH)
@@ -378,7 +400,64 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         ).click()
         print(" -> 已點擊最後的下一步")
 
-        print("\n測試流程順利執行完畢！ ✅")
+        # 步驟 7.9: 點擊資料確認頁的「確認」按鈕
+        print(" -> 點擊資料確認頁的「確認」按鈕...")
+        confirm_data_button_id = "tw.com.icash.a.icashpay.prod:id/leftButton"
+        print(f"    -> 等待並點擊 '{confirm_data_button_id}'")
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, confirm_data_button_id))
+        ).click()
+        print(" -> 已點擊「確認」")
+
+        # --- ✨ 步驟 8: 設定安全密碼 ✨ ---
+        print("\n步驟 8: 設定安全密碼...")
+        security_pin = "246790"
+
+        # 等待「請輸入安全密碼」的標題出現，確保頁面已載入
+        pin_description_id = "tw.com.icash.a.icashpay.prod:id/security_password_description"
+        WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((AppiumBy.ID, pin_description_id))
+        )
+        print(" -> 安全密碼頁面已載入")
+
+        # 點擊第一個密碼輸入區以觸發鍵盤
+        first_pin_area_id = "tw.com.icash.a.icashpay.prod:id/nativeKeyboardPasswordLayout"
+        print(f"    -> 點擊第一個密碼輸入區 '{first_pin_area_id}'")
+        driver.find_element(AppiumBy.ID, first_pin_area_id).click()
+        time.sleep(1)
+
+        # 輸入第一組 PIN
+        enter_pin_by_keycode(driver, security_pin)
+
+        # 點擊第二個密碼輸入區
+        second_pin_area_id = "tw.com.icash.a.icashpay.prod:id/doubleConfirmNativeKeyboardPasswordLayout"
+        print(f"    -> 點擊第二個密碼輸入區 '{second_pin_area_id}'")
+        driver.find_element(AppiumBy.ID, second_pin_area_id).click()
+        time.sleep(1)
+
+        # 輸入第二組 PIN
+        enter_pin_by_keycode(driver, security_pin)
+        print(" -> 已完成兩次密碼輸入")
+
+        # --- ✨ 步驟 8.1: 點擊最後的「確認」按鈕 ✨ ---
+        print(" -> 點擊最後的「確認」按鈕...")
+        final_confirm_button_id = "tw.com.icash.a.icashpay.prod:id/tvConfirm"
+        print(f"    -> 等待並點擊 '{final_confirm_button_id}'")
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, final_confirm_button_id))
+        ).click()
+        print(" -> 已點擊最終「確認」")
+
+        # --- ✨ 步驟 9: 點擊最後的「下一步」按鈕 ✨ ---
+        print("\n步驟 9: 點擊最後的「下一步」按鈕...")
+        final_step_button_id = "tw.com.icash.a.icashpay.prod:id/leftButton"
+        print(f"    -> 等待並點擊 '{final_step_button_id}'")
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, final_step_button_id))
+        ).click()
+        print(" -> 已點擊最後的「下一步」")
+
+        print("\n註冊流程已全部完成！ ✅")
         time.sleep(5)
 
     except TimeoutException as e:
