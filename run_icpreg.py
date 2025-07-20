@@ -15,14 +15,17 @@ def execute_script(script_path):
     print(f"--- 正在執行腳本：{os.path.basename(script_path)} ---")
 
     try:
-        # 使用 subprocess 執行 Python 腳本
+        # 【修改重點】
+        # 1. 使用 [sys.executable, script_path] 列表傳遞指令，更安全可靠。
+        # 2. 將 encoding 從 'utf-8' 改為 'cp950' 以符合 Windows 繁中環境的預設編碼。
+        # 3. 增加 errors='ignore' 參數以增強容錯能力。
         process = subprocess.run(
-            f'python "{script_path}"',
-            shell=True,
+            [sys.executable, script_path],  # 修改點 1
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            timeout=60  # 設置 60 秒超時
+            encoding='cp950',               # 修改點 2
+            errors='ignore',                # 修改點 3
+            timeout=60                      # 設置 60 秒超時
         )
 
         # 印出腳本的標準輸出
