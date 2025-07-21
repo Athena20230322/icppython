@@ -502,6 +502,15 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         ).click()
         print(" -> 已點擊最後的「下一步」")
 
+        # --- ✨ 新增步驟 10: 點擊「下次再說」按鈕 ✨ ---
+        print("\n步驟 10: 點擊 '下次再說' 按鈕...")
+        skip_button_id = "tw.com.icash.a.icashpay.debuging:id/tv_done"
+        print(f"    -> 等待並點擊 '{skip_button_id}'")
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, skip_button_id))
+        ).click()
+        print(" -> 已點擊「下次再說」")
+
         print("\n註冊流程已全部完成！ ✅")
         time.sleep(5)
 
