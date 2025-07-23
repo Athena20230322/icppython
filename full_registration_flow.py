@@ -45,7 +45,7 @@ def generate_taiwan_id():
     return f"{city_letter}{gender}{''.join(map(str, middle_digits))}{checksum}"
 
 
-def get_next_phone_number(start_number=950001617):
+def get_next_phone_number(start_number=950001717):
     """讀取檔案中的手機號碼，將其加一，然後寫回檔案。"""
     try:
         os.makedirs(os.path.dirname(LAST_PHONE_FILE), exist_ok=True)

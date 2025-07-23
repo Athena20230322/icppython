@@ -506,7 +506,22 @@ class CertificateApiClient:
             ("AddCommonBill", {"Timestamp": ts(),
                                "BillData": {"BillNumber": "AH-6999", "EBillSN": "", "Query1": "C", "Query2": "AH-6999",
                                             "Query3": "", "Query4": "", "QueryType": "1"}}, "postData71.txt"),
-
+            ("CheckIsOP", {"Timestamp": ts(), "CellPhone": "0976100002"}, "postData72.txt"),
+            ("CheckIsOP", {"Timestamp": ts(), "CellPhone": "0910000616"}, "postData73.txt"),
+            ("getLoginRecord", {"Timestamp": ts()}, "postData74.txt"),
+            ("GetMarquee", {"Timestamp": ts()}, "postData75.txt"),
+            ("getPcodeBankList", {"Timestamp": ts()}, "postData76.txt"),
+            ("GetCardBannerInfo", {"Timestamp": ts()}, "postData77.txt"),
+            ("GetCardPageInfo", {"Timestamp": ts()}, "postData78.txt"),
+            ("GetPushList", {"Timestamp": ts(), "ModifyDate": "2025/06/08 09:44:33", "Page": "1", "PageSize": "1"},"postData79.txt"),
+            ("SetPushRead", {"Timestamp": ts(), "SetAll": "1", "TraceId": "1"}, "postData80.txt"),
+            ("GetAPPAd", {"Timestamp": ts(), "ADType": "1"}, "postData81.txt"),
+            ("GetAPPAdActivity", {"Timestamp": ts(), "ADID": "1"}, "postData82.txt"),
+            ("GetAPPAdUpdate", {"Timestamp": ts(), "Type": "1"}, "postData83.txt"),
+            ("GetAPPAdUpdate", {"Timestamp": ts(), "Type": "0"}, "postData83_1.txt"),
+            ("GetAllAPPAd", {"Timestamp": ts(), }, "postData84.txt"),
+            ("GetTotalCoins", {"Timestamp": ts(), }, "postData85.txt"),
+            ("GetTransferToken", {"Timestamp": ts(), }, "postData86.txt"),
 
 
         ]
