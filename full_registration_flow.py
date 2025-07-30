@@ -5,6 +5,8 @@ import os
 import sys
 from datetime import datetime
 import random
+import traceback
+import webbrowser
 
 # 確保 pycryptodome 已安裝
 try:
@@ -24,6 +26,148 @@ LAST_IDNO_FILE = os.path.join(BASE_PATH, "last_idno.txt")
 TOKEN_FILE = os.path.join(BASE_PATH, "reglogintokenid.txt")
 AUTH_CODE_FILE = os.path.join(BASE_PATH, "regauthcode.txt")
 REGISTRATION_LOG_FILE = os.path.join(BASE_PATH, "registration_log.txt")
+
+
+# --- HTML 報告產生類別 ---
+class HtmlReporter:
+    """產生並儲存一個 HTML 格式的測試報告。"""
+
+    def __init__(self, report_title):
+        self.report_title = report_title
+        self.steps = []
+        self.start_time = datetime.now()
+        self.end_time = None
+        self.overall_status = "⏳ 執行中"
+
+    def add_step(self, step_name, status, request_payload, decrypted_response=None, error_details=None):
+        """新增一個 API 呼叫步驟到報告中。"""
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        details = {}
+        if request_payload:
+            details["Request (解密後)"] = json.dumps(request_payload, indent=2, ensure_ascii=False)
+        if decrypted_response:
+            details["Response (解密後)"] = json.dumps(decrypted_response, indent=2, ensure_ascii=False)
+        if error_details:
+            details["Error Info"] = error_details
+
+        self.steps.append({
+            "name": step_name,
+            "status": status,
+            "timestamp": timestamp,
+            "details": details
+        })
+        if "❌" in status:
+            self.overall_status = "❌ 失敗"
+
+    def finalize_report(self):
+        """設定報告的最終狀態。"""
+        self.end_time = datetime.now()
+        if self.overall_status == "⏳ 執行中":
+            self.overall_status = "✅ 成功"
+
+    def generate_html(self):
+        """產生完整的 HTML 報告內容。"""
+        if not self.end_time:
+            self.finalize_report()
+
+        duration = self.end_time - self.start_time
+        status_color = '#28a745' if '✅' in self.overall_status else '#dc3545'
+
+        # HTML and CSS
+        html = f"""
+        <!DOCTYPE html>
+        <html lang="zh-Hant">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>{self.report_title}</title>
+            <style>
+                body {{ font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }}
+                .container {{ max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 8px; }}
+                h1 {{ color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+                .summary {{ background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid {status_color}; }}
+                .summary p {{ margin: 5px 0; font-size: 1.1em;}}
+                .summary-status {{ font-size: 1.3em; font-weight: bold; color: {status_color}; }}
+                table {{ width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }}
+                th, td {{ border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; word-wrap: break-word; }}
+                th {{ background-color: #3498db; color: white; }}
+                tr:nth-child(even) {{ background-color: #f9f9f9; }}
+                .status-success {{ color: #28a745; font-weight: bold; }}
+                .status-failure {{ color: #dc3545; font-weight: bold; }}
+                details {{ cursor: pointer; margin-top: 10px; }}
+                summary {{ font-weight: bold; list-style-position: inside; }}
+                pre {{ background-color: #2d2d2d; color: #f2f2f2; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>{self.report_title}</h1>
+                <div class="summary">
+                    <p><strong>整體狀態:</strong> <span class="summary-status">{self.overall_status}</span></p>
+                    <p><strong>開始時間:</strong> {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}</p>
+                    <p><strong>結束時間:</strong> {self.end_time.strftime('%Y-%m-%d %H:%M:%S')}</p>
+                    <p><strong>總耗時:</strong> {str(duration).split('.')[0]}</p>
+                </div>
+                <table>
+                    <colgroup>
+                       <col style="width: 5%;">
+                       <col style="width: 25%;">
+                       <col style="width: 10%;">
+                       <col style="width: 15%;">
+                       <col style="width: 45%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>執行動作</th>
+                            <th>狀態</th>
+                            <th>時間戳</th>
+                            <th>詳細資料</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        """
+        for i, step in enumerate(self.steps, 1):
+            status_class = "status-success" if "✅" in step['status'] else "status-failure"
+            details_html = ""
+            for key, value in step['details'].items():
+                details_html += f"""
+                <details>
+                    <summary>{key}</summary>
+                    <pre><code>{value}</code></pre>
+                </details>
+                """
+            html += f"""
+            <tr>
+                <td>{i}</td>
+                <td>{step['name']}</td>
+                <td class="{status_class}">{step['status']}</td>
+                <td>{step['timestamp']}</td>
+                <td>{details_html}</td>
+            </tr>
+            """
+        html += """
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+        """
+        return html
+
+    def save_and_open_report(self, base_path):
+        """儲存報告到檔案並在瀏覽器中開啟。"""
+        os.makedirs(base_path, exist_ok=True)
+        filename = f"Registration_Report_{self.start_time.strftime('%Y%m%d_%H%M%S')}.html"
+        filepath = os.path.join(base_path, filename)
+        html_content = self.generate_html()
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            print(f"\n📄 報告已成功生成: {filepath}")
+            webbrowser.open(f'file://{os.path.realpath(filepath)}')
+        except Exception as e:
+            print(f"\n❌ 錯誤: 無法儲存或開啟報告: {e}")
 
 
 # --- 共用函式 ---
@@ -200,8 +344,6 @@ class FullFlowApiClient:
         """將指定的註冊資料記錄到檔案中"""
         try:
             os.makedirs(os.path.dirname(REGISTRATION_LOG_FILE), exist_ok=True)
-
-            # === 修改：在記錄格式中加入 CellPhone ===
             log_entry = (
                 f"--- Execution Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ---\n"
                 f"UserCode: {data_to_log.get('UserCode', 'N/A')}\n"
@@ -212,144 +354,165 @@ class FullFlowApiClient:
                 f"LastAPITimestamp: {data_to_log.get('LastTimestamp', 'N/A')}\n"
                 f"--------------------------------------------------\n\n"
             )
-
             with open(REGISTRATION_LOG_FILE, 'a', encoding='utf-8') as f:
                 f.write(log_entry)
-
             print(f"\n✅ 註冊資料已成功記錄至: {REGISTRATION_LOG_FILE}")
-
         except Exception as e:
             print(f"\n❌ 錯誤: 無法將資料寫入記錄檔: {e}")
 
     def run_full_flow(self):
-        """完整執行註冊到身分驗證的流程"""
+        """完整執行註冊到身分驗證的流程，並產生 HTML 報告"""
+        reporter = HtmlReporter(report_title="iCashPay API 註冊流程報告")
+        current_step = "開始"
         log_data = {}
 
         try:
-            # === 準備階段：產生動態資料 ===
+            # === (***程式碼修改處***) 準備階段：產生動態資料與動態設備資訊 ===
+            current_step = "準備階段: 產生動態資料"
+
+            # --- NEW: 每次執行都隨機化設備資訊 ---
+            random_suffix = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=4))
+            common_device_info = {
+                "AppName": "002",
+                "DeviceID": f"b4f194a{random.randint(100000, 999999)}",  # 隨機化DeviceID
+                "DeviceInfo": f"Pixel 7_{random_suffix}",  # 隨機化DeviceInfo
+                "IsSimulator": "0",
+                "OS": "2"
+            }
+            print(f"本次執行使用動態設備資訊: DeviceID={common_device_info['DeviceID']}, DeviceInfo={common_device_info['DeviceInfo']}")
+            # --- END NEW ---
+
             user_code = f"i{int(datetime.now().timestamp())}"
             cell_phone = get_next_phone_number()
             id_no = generate_taiwan_id()
             user_pwd = 'Aa123456'
             confirm_sec_pwd = "246790"
 
-            # === 修改：將 CellPhone 也加入待記錄的字典 ===
-            log_data['UserCode'] = user_code
-            log_data['UserPwd'] = user_pwd
-            log_data['CellPhone'] = cell_phone
-            log_data['Idno'] = id_no
-            log_data['ConfirmSecPwd'] = confirm_sec_pwd
-
+            log_data.update({
+                'UserCode': user_code, 'UserPwd': user_pwd, 'CellPhone': cell_phone,
+                'Idno': id_no, 'ConfirmSecPwd': confirm_sec_pwd, 'DeviceInfo': common_device_info
+            })
             with open(LAST_IDNO_FILE, 'w') as f:
                 f.write(id_no)
             print(f"動態資料已產生: UserCode={user_code}, CellPhone={cell_phone}, IDNo={id_no}")
+            reporter.add_step(current_step, "✅ 成功", log_data)
 
             # === 金鑰交換流程 ===
-            self._initialize_keys()
+            current_step = "金鑰交換流程"
+            self._initialize_keys(reporter)  # 傳入 reporter 以便記錄金鑰交換的子步驟
 
             # === 步驟 1: 設定註冊資訊 (SetRegisterInfo2022) ===
+            current_step = "步驟 1: 設定註冊資訊 (SetRegisterInfo2022)"
             payload1 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'CellPhone': cell_phone,
-                'UserCode': user_code,
-                'UserPwd': user_pwd
+                'CellPhone': cell_phone, 'UserCode': user_code, 'UserPwd': user_pwd
             }
             result1, _, _ = self._call_api("app/MemberInfo/SetRegisterInfo2022", payload1)
+            reporter.add_step(current_step, "✅ 成功", payload1, result1)  # 記錄成功步驟
             self._login_token_id = result1.get("LoginTokenID")
-            if not self._login_token_id:
-                raise Exception("步驟 1 未能獲取 LoginTokenID。")
+            if not self._login_token_id: raise Exception("步驟 1 未能獲取 LoginTokenID。")
             with open(TOKEN_FILE, 'w') as f:
                 f.write(self._login_token_id)
             print(f"LoginTokenID '{self._login_token_id}' 已儲存。")
 
             # === 步驟 2: 發送簡訊驗證碼 (SendAuthSMS) ===
+            current_step = "步驟 2: 發送簡訊驗證碼 (SendAuthSMS)"
             payload2 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'CellPhone': cell_phone,
-                'LoginTokenID': self._login_token_id,
-                'SMSAuthType': '1',
-                'UserCode': ''
+                'CellPhone': cell_phone, 'LoginTokenID': self._login_token_id,
+                'SMSAuthType': '1', 'UserCode': ''
             }
             result2, _, _ = self._call_api("app/MemberInfo/SendAuthSMS", payload2)
+            reporter.add_step(current_step, "✅ 成功", payload2, result2)
             auth_code = result2.get("AuthCode")
-            if not auth_code:
-                raise Exception("步驟 2 未能獲取 AuthCode。")
+            if not auth_code: raise Exception("步驟 2 未能獲取 AuthCode。")
             with open(AUTH_CODE_FILE, 'w') as f:
                 f.write(auth_code)
             print(f"AuthCode '{auth_code}' 已儲存。")
 
             # === 步驟 3: 驗證簡訊 (CheckRegisterAuthSMS) ===
+            current_step = "步驟 3: 驗證簡訊 (CheckRegisterAuthSMS)"
             payload3 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'CellPhone': cell_phone,
-                'LoginTokenID': self._login_token_id,
-                'AuthCode': auth_code
+                'CellPhone': cell_phone, 'LoginTokenID': self._login_token_id, 'AuthCode': auth_code
             }
-            self._call_api("app/MemberInfo/CheckRegisterAuthSMS", payload3)
+            result3, _, _ = self._call_api("app/MemberInfo/CheckRegisterAuthSMS", payload3)
+            reporter.add_step(current_step, "✅ 成功", payload3, result3)
             print("簡訊驗證成功。")
 
             # === 步驟 4: 身分驗證 (AuthIDNO) ===
+            current_step = "步驟 4: 身分驗證 (AuthIDNO)"
             payload4 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'LoginTokenID': self._login_token_id,
-                "Address": "板橋區中山路一段161號",
-                "AreaID": "220",
-                "BirthDay": "2000-01-01",
-                "CName": "測試一",
-                "Email": f"{user_code}@test.com",
-                "Idno": id_no,
-                "IssueDate": "2020-01-01",
-                "IssueLoc": "65000",
-                "IssueType": "1",
-                "NationalityID": "1206",
-                "fileCols": "img1,img2"
+                'LoginTokenID': self._login_token_id, "Address": "板橋區中山路一段161號", "AreaID": "220",
+                "BirthDay": "2000-01-01", "CName": "測試一", "Email": f"{user_code}@test.com",
+                "Idno": id_no, "IssueDate": "2020-01-01", "IssueLoc": "65000",
+                "IssueType": "1", "NationalityID": "1206", "fileCols": "img1,img2"
             }
-            self._call_api("app/MemberInfo/AuthIDNO", payload4)
+            result4, _, _ = self._call_api("app/MemberInfo/AuthIDNO", payload4)
+            reporter.add_step(current_step, "✅ 成功", payload4, result4)
             print("身分驗證成功。")
 
             # === 步驟 5: 變更交易密碼 (ChangeSecurityPwd) ===
+            current_step = "步驟 5: 變更交易密碼 (ChangeSecurityPwd)"
             payload5 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                'ConfirmSecPwd': confirm_sec_pwd,
-                'NewSecPwd': confirm_sec_pwd
+                'ConfirmSecPwd': confirm_sec_pwd, 'NewSecPwd': confirm_sec_pwd
             }
-            self._call_api("app/MemberInfo/ChangeSecurityPwd", payload5)
+            result5, _, _ = self._call_api("app/MemberInfo/ChangeSecurityPwd", payload5)
+            reporter.add_step(current_step, "✅ 成功", payload5, result5)
             print("變更交易密碼成功。")
 
             # === 步驟 6: 檢查是否為OP會員 (CheckIsOP) ===
+            current_step = "步驟 6: 檢查是否為OP會員 (CheckIsOP)"
             payload6 = {
+                **common_device_info,
                 'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 'CellPhone': cell_phone
             }
-            self._call_api("app/MemberInfo/CheckIsOP", payload6)
+            result6, _, _ = self._call_api("app/MemberInfo/CheckIsOP", payload6)
+            reporter.add_step(current_step, "✅ 成功", payload6, result6)
             print("檢查OP會員狀態成功。")
 
             # === 步驟 7: 註冊為OP會員 (RegisterOpMember) ===
+            current_step = "步驟 7: 註冊為OP會員 (RegisterOpMember)"
             last_api_timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             log_data['LastTimestamp'] = last_api_timestamp
-
             payload7 = {
+                **common_device_info,
                 'Timestamp': last_api_timestamp,
-                'CellPhone': cell_phone,
-                'Birthday': "20000101"
+                'CellPhone': cell_phone, 'Birthday': "20000101"
             }
-            self._call_api("app/MemberInfo/RegisterOpMember", payload7)
+            result7, _, _ = self._call_api("app/MemberInfo/RegisterOpMember", payload7)
+            reporter.add_step(current_step, "✅ 成功", payload7, result7)
             print("註冊OP會員成功。")
 
             self._log_registration_data(log_data)
-
             print("\n======= ✅ 全部 7 個步驟流程執行成功！ ✅ =======")
 
         except Exception as e:
-            print(f"\n======= ❌ 流程執行失敗 ❌ =======")
+            print(f"\n======= ❌ 流程執行失敗於: {current_step} ❌ =======")
             print(f"錯誤訊息: {e}")
-            import traceback
-            traceback.print_exc()
+            error_info = f"Error: {e}\n\nTraceback:\n{traceback.format_exc()}"
+            # 根據失敗時的 payload 變數來決定傳入哪個 payload
+            failed_payload = locals().get(f'payload{current_step[3]}', None) if current_step.startswith(
+                "步驟") else log_data
+            reporter.add_step(current_step, "❌ 失敗", failed_payload, error_details=error_info)
             print(f"====================================")
 
-    def _initialize_keys(self):
+        finally:
+            reporter.finalize_report()
+            reporter.save_and_open_report(BASE_PATH)
+
+    def _initialize_keys(self, reporter):  # (修改) 接收 reporter 物件
         """處理 GetDefaultPucCert, ExchangePucCert, 和 GenerateAES 的完整流程"""
         print("--- 階段: 初始化金鑰 ---")
+
         # 1. GetDefaultPucCert
         url1 = f"{self.base_url}api/member/Certificate/GetDefaultPucCert"
         response1 = self.session.post(url1).json()
@@ -357,12 +520,12 @@ class FullFlowApiClient:
         default_cert_id = response1['DefaultPubCertID']
         default_public_key = response1['DefaultPubCert']
         self._server_public_key = default_public_key
+        reporter.add_step("金鑰交換 (1/3): GetDefaultPucCert", "✅ 成功", {"URL": url1}, response1)
 
         # 2. ExchangePucCert
         client_keys = self.rsa_helper.generate_pem_key()
         self._client_private_key = client_keys['private_key']
         client_pub_oneline = "".join(client_keys['public_key'].splitlines()[1:-1])
-
         payload2 = {
             'ClientPubCert': client_pub_oneline,
             'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
@@ -372,7 +535,7 @@ class FullFlowApiClient:
         decrypted_result, raw_content, signature = self._call_api(
             "api/member/Certificate/ExchangePucCert", payload2, use_aes=False, skip_verification=True
         )
-
+        reporter.add_step("金鑰交換 (2/3): ExchangePucCert", "✅ 成功", payload2, decrypted_result)
         self._server_public_key = decrypted_result['ServerPubCert']
         self.rsa_helper.import_pem_public_key(self._server_public_key)
         if not self.rsa_helper.verify_sign_data_with_sha256(raw_content, signature):
@@ -387,22 +550,18 @@ class FullFlowApiClient:
         enc_data3 = self.rsa_helper.encrypt(json_payload3)
         self.rsa_helper.import_pem_private_key(self._client_private_key)
         signature3 = self.rsa_helper.sign_data_with_sha256(enc_data3)
-        headers3 = {
-            'X-iCP-ServerPubCertID': str(server_pub_cert_id),
-            'X-iCP-Signature': signature3
-        }
+        headers3 = {'X-iCP-ServerPubCertID': str(server_pub_cert_id), 'X-iCP-Signature': signature3}
         url3 = f"{self.base_url}api/member/Certificate/GenerateAES"
         response3 = self.session.post(url3, data={'EncData': enc_data3}, headers=headers3)
         response3.raise_for_status()
-
         content3 = response3.text
         self.rsa_helper.import_pem_public_key(self._server_public_key)
         if not self.rsa_helper.verify_sign_data_with_sha256(content3, response3.headers.get('X-iCP-Signature')):
             raise Exception("GenerateAES 簽章驗證失敗")
-
         result3_enc = json.loads(content3)
         self.rsa_helper.import_pem_private_key(self._client_private_key)
         result3_dec = json.loads(self.rsa_helper.decrypt(result3_enc['EncData']))
+        reporter.add_step("金鑰交換 (3/3): GenerateAES", "✅ 成功", payload3, result3_dec)
 
         self._aes_key_id = result3_dec['EncKeyID']
         self._aes_key = result3_dec['AES_Key']

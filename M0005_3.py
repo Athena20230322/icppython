@@ -522,7 +522,26 @@ class CertificateApiClient:
             ("GetAllAPPAd", {"Timestamp": ts(), }, "postData84.txt"),
             ("GetTotalCoins", {"Timestamp": ts(), }, "postData85.txt"),
             ("GetTransferToken", {"Timestamp": ts(), }, "postData86.txt"),
-
+            ("GetTopUpBarCode", {"Timestamp": ts(), "Amount": "10"}, "postData87.txt"),
+            ("GetTopUpBarCode", {"Timestamp": ts(), "Amount": "5"}, "postData87_1.txt"),
+            ("GetTopUpBarCode", {"Timestamp": ts(), "Amount": "0"}, "postData87_2.txt"),
+            ("GetTopUpByAccountLinkInfo", {"Timestamp": ts(), }, "postData88.txt"),
+            ("TopUpByAccountLink", {"Timestamp": ts(), "AccountID": "21917", "Amount": "10", "BankCode": "050"},
+             "postData89.txt"),
+            ("DoQRPayment", {"Timestamp": ts(), "Amount": "50", "MerchantID": "10523880", "PayID": "11682311000002844"},
+             "postData90.txt"),
+            ("CheckFiscDoubleValidation", {"Timestamp": ts(), "BillData": "", "CommonID": "", "ItemID": "TPP00046"},
+             "postData91.txt"),
+            ("ListDialogWithEc", {"Timestamp": ts(), }, "postData92.txt"),
+            ("SetTradeRegion", {"Timestamp": ts(), "NationalityCode": "KOR"},
+             "postData93.txt"),
+            ("SetTradeRegion", {"Timestamp": ts(), "NationalityCode": "TWN"},
+             "postData94.txt"),
+            ("CheckVerifyStatus", {"Timestamp": ts(), }, "postData95.txt"),
+            ("GetLoginInfo", {"Timestamp": ts(), }, "postData96.txt"),
+            ("GetMemberPreferences", {"Timestamp": ts(), "OptionName": "test1"},
+             "postData97.txt"),
+            ("CheckKeyStatus", {"Timestamp": ts(), }, "postData98.txt"),
 
         ]
 

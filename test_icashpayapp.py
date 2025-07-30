@@ -17,7 +17,7 @@ from selenium.common.exceptions import TimeoutException
 capabilities = {
     "platformName": "Android",
     "appium:platformVersion": "14",
-    "appium:deviceName": "R5CT925Z7CA",
+    "appium:deviceName": "R5CR517P4XL",
     "appium:appPackage": "tw.com.icash.a.icashpay.debuging",
     "appium:noReset": True,
     "appium:automationName": "UiAutomator2",
