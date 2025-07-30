@@ -110,15 +110,16 @@ def process_download_with_selenium(env_type, initial_url, save_directory, existi
         driver.get(initial_url)
         time.sleep(5)  # 等待頁面 JavaScript 可能的加載
 
-        # --- 使用通用的 XPath 定位 <a> 標籤 ---
-        target_xpath = "//*[@id='table02']/tbody/tr/td/a"
-        print(f"正在使用 XPath 嘗試定位: {target_xpath}")
+        # --- (***程式碼修改處***) 使用通用的新版 XPath 定位 <a> 標籤 ---
+        # 調整後的 XPath 直接指向 <a> 標籤以獲取 href
+        target_xpath = "//*[@id='app']/div[1]/div[4]/div/div[2]/div[4]/div[2]/a"
+        print(f"正在使用更新後的 XPath 嘗試定位: {target_xpath}")
         target_link = driver.find_element(By.XPATH, target_xpath)
 
         # 取得 <a> 標籤的 'href' 屬性，即為下載連結
         final_download_url = target_link.get_attribute('href')
 
-        # --- 主要修改處：針對 Dropbox 連結進行特殊處理 ---
+        # --- 針對 Dropbox 連結進行特殊處理 ---
         # 這個修改是為了繞過 Dropbox 的直接下載限制
         if 'dl-web.dropbox.com' in final_download_url:
             original_url = final_download_url
