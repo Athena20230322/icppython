@@ -514,7 +514,7 @@ class CertificateApiClient:
             ("GetCardBannerInfo", {"Timestamp": ts()}, "postData77.txt"),
             ("GetCardPageInfo", {"Timestamp": ts()}, "postData78.txt"),
             ("GetPushList", {"Timestamp": ts(), "ModifyDate": "2025/06/08 09:44:33", "Page": "1", "PageSize": "1"},"postData79.txt"),
-            ("SetPushRead", {"Timestamp": ts(), "TraceId": "1", "SetAll": "1"}, "postData80.txt"),
+            ("SetPushRead", {"Timestamp": ts(), "TraceId": "1", "SetAll": 1}, "postData80.txt"),
             ("GetAPPAd", {"Timestamp": ts(), "ADType": "1"}, "postData81.txt"),
             ("GetAPPAdActivity", {"Timestamp": ts(), "ADID": "1"}, "postData82.txt"),
             ("GetAPPAdUpdate", {"Timestamp": ts(), "Type": "1"}, "postData83.txt"),
