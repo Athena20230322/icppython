@@ -377,6 +377,19 @@ class CertificateApiClient:
                                        {'X-iCP-EncKeyID': str(self._aes_client_cert_id)})
             reporter.add_step(current_step_name, "✅ 成功", payload4, dec_resp4)
 
+            # --- 【***程式碼修改處***】: 強化 NextStep 狀態的輸出 ---
+            # 從步驟 4 的回應中提取 NextStep 的值
+            next_step_status = dec_resp4.get("NextStep")
+            # 使用分隔線讓輸出更醒目
+            print("\n" + "=" * 25)
+            if next_step_status is not None:
+                # 在主控台印出 NextStep 的狀態
+                print(f"  [狀態檢查] NextStep: {next_step_status}")
+            else:
+                print("  [狀態檢查] 回應中未找到 NextStep 欄位。")
+            print("=" * 25 + "\n")
+            # --- 修改結束 ---
+
             print("\n=== 所有流程執行完畢 ===")
 
         except Exception as e:

@@ -234,7 +234,6 @@ class CertificateApiClient:
         except (ValueError, TypeError):
             print(f"無法解析時間戳：{timestamp_str}")
 
-    # --- 【***程式碼修改處 1***】: 增加 skip_verification 參數 ---
     def _call_api(self, action, payload, headers, use_aes=True, skip_verification=False):
         """通用內部 API 呼叫方法，包含加解密和簽章。"""
         json_payload = json.dumps(payload, ensure_ascii=False)
@@ -255,7 +254,6 @@ class CertificateApiClient:
 
         response_content, response_signature = response.text, response.headers.get('X-iCP-Signature')
 
-        # 只有在 skip_verification 為 False 時才執行自動驗證
         if not skip_verification:
             self.rsa_helper.import_pem_public_key(self._server_public_key)
             if not self.rsa_helper.verify_sign_data_with_sha256(response_content, response_signature):
@@ -275,13 +273,11 @@ class CertificateApiClient:
         decrypted_data = json.loads(decrypted_data_str)
         self._check_timestamp(decrypted_data.get('Timestamp'))
 
-        # 如果跳過了驗證，則回傳額外資訊供手動驗證
         if skip_verification:
             return decrypted_data, response_content, response_signature
         else:
             return decrypted_data
 
-    # --- 【***程式碼修改處 2***】: 調整金鑰初始化流程 ---
     def _initialize_keys(self):
         if self._aes_key: return
         print("--- 開始金鑰初始化流程 ---")
@@ -299,23 +295,21 @@ class CertificateApiClient:
             'ClientPubCert': "".join(client_key_pair['public_key'].splitlines()[1:-1]),
             'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         }
-        # 跳過自動驗證，並接收原始回應以供手動驗證
         dec_resp_exchange, raw_content, signature = self._call_api(
             "api/member/Certificate/ExchangePucCert",
             payload_exchange,
             {'X-iCP-DefaultPubCertID': str(default_cert_id)},
             use_aes=False,
-            skip_verification=True  # <<<<<< 關鍵修改
+            skip_verification=True
         )
 
-        # 手動驗證：先取得新公鑰，再用新公鑰驗證簽章
         self._server_public_key = dec_resp_exchange['ServerPubCert']
         self.rsa_helper.import_pem_public_key(self._server_public_key)
         if not self.rsa_helper.verify_sign_data_with_sha256(raw_content, signature):
             raise Exception("ExchangePucCert 手動簽章驗證失敗")
         print("ExchangePucCert 手動簽章驗證成功。")
 
-        # 3. GenerateAES (此步驟使用新的 server_public_key，可以正常自動驗證)
+        # 3. GenerateAES
         payload_aes = {'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S")}
         dec_resp_aes = self._call_api(
             "api/member/Certificate/GenerateAES",
@@ -338,7 +332,6 @@ class CertificateApiClient:
                 "測試手機": cellphone, "測試帳號": user_code
             })
 
-            # --- 【***程式碼修改處 3***】: 在呼叫金鑰初始化時也加入 try-except ---
             current_step_name = "金鑰初始化"
             self._initialize_keys()
             reporter.add_step(current_step_name, "✅ 成功")
@@ -377,21 +370,31 @@ class CertificateApiClient:
                                        {'X-iCP-EncKeyID': str(self._aes_client_cert_id)})
             reporter.add_step(current_step_name, "✅ 成功", payload4, dec_resp4)
 
+            # --- 【***程式碼修改處***】: 強化 NextStep 狀態的輸出 ---
+            # 從步驟 4 的回應中提取 NextStep 的值
+            next_step_status = dec_resp4.get("NextStep")
+            # 使用分隔線讓輸出更醒目
+            print("\n" + "=" * 25)
+            if next_step_status is not None:
+                # 在主控台印出 NextStep 的狀態
+                print(f"  [狀態檢查] NextStep: {next_step_status}")
+            else:
+                print("  [狀態檢查] 回應中未找到 NextStep 欄位。")
+            print("=" * 25 + "\n")
+            # --- 修改結束 ---
+
             print("\n=== 所有流程執行完畢 ===")
 
         except Exception as e:
             print(f"\n[執行流程時發生錯誤於 '{current_step_name}']: {e}")
             error_info = f"Error: {e}\n\nTraceback:\n{traceback.format_exc()}"
 
-            # --- 【***程式碼修改處 4***】: 強化錯誤處理邏輯 ---
             failed_payload = "N/A"
             try:
-                # 僅在步驟名稱符合 "步驟 X" 格式時嘗試解析
                 if "步驟" in current_step_name:
                     step_number = current_step_name.split(' ')[0].replace('步驟', '').replace(':', '')
                     failed_payload = locals().get(f"payload{step_number}", "N/A")
             except (IndexError, KeyError):
-                # 如果解析失敗，則保持預設值 "N/A"
                 pass
 
             reporter.add_step(current_step_name, "❌ 失敗", failed_payload, error_details=error_info)

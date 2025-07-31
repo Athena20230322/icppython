@@ -377,21 +377,31 @@ class CertificateApiClient:
                                        {'X-iCP-EncKeyID': str(self._aes_client_cert_id)})
             reporter.add_step(current_step_name, "✅ 成功", payload4, dec_resp4)
 
+            # --- 【***程式碼修改處***】: 強化 NextStep 狀態的輸出 ---
+            # 從步驟 4 的回應中提取 NextStep 的值
+            next_step_status = dec_resp4.get("NextStep")
+            # 使用分隔線讓輸出更醒目
+            print("\n" + "=" * 25)
+            if next_step_status is not None:
+                # 在主控台印出 NextStep 的狀態
+                print(f"  [狀態檢查] NextStep: {next_step_status}")
+            else:
+                print("  [狀態檢查] 回應中未找到 NextStep 欄位。")
+            print("=" * 25 + "\n")
+            # --- 修改結束 ---
+
             print("\n=== 所有流程執行完畢 ===")
 
         except Exception as e:
             print(f"\n[執行流程時發生錯誤於 '{current_step_name}']: {e}")
             error_info = f"Error: {e}\n\nTraceback:\n{traceback.format_exc()}"
 
-            # --- 【***程式碼修改處 4***】: 強化錯誤處理邏輯 ---
             failed_payload = "N/A"
             try:
-                # 僅在步驟名稱符合 "步驟 X" 格式時嘗試解析
                 if "步驟" in current_step_name:
                     step_number = current_step_name.split(' ')[0].replace('步驟', '').replace(':', '')
                     failed_payload = locals().get(f"payload{step_number}", "N/A")
             except (IndexError, KeyError):
-                # 如果解析失敗，則保持預設值 "N/A"
                 pass
 
             reporter.add_step(current_step_name, "❌ 失敗", failed_payload, error_details=error_info)

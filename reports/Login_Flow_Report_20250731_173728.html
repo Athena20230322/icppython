@@ -1,0 +1,107 @@
+
+        <!DOCTYPE html>
+        <html lang="zh-Hant">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>iCashPay 登入與驗證流程報告</title>
+            <style>
+                body { font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+                .container { max-width: 1200px; margin: auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 8px; }
+                h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                .summary { background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #dc3545; }
+                .summary p { margin: 5px 0; font-size: 1.1em;}
+                .summary-status { font-size: 1.3em; font-weight: bold; color: #dc3545; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; word-wrap: break-word; }
+                th { background-color: #3498db; color: white; }
+                tr:nth-child(even) { background-color: #f9f9f9; }
+                .status-success { color: #28a745; font-weight: bold; }
+                .status-failure { color: #dc3545; font-weight: bold; }
+                details { cursor: pointer; margin-top: 10px; }
+                summary { font-weight: bold; list-style-position: inside; }
+                pre { background-color: #2d2d2d; color: #f2f2f2; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; font-size: 0.9em; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>iCashPay 登入與驗證流程報告</h1>
+                <div class="summary">
+                    <p><strong>整體狀態:</strong> <span class="summary-status">❌ 失敗</span></p>
+                    <p><strong>開始時間:</strong> 2025-07-31 17:37:28</p>
+                    <p><strong>結束時間:</strong> 2025-07-31 17:37:29</p>
+                    <p><strong>總耗時:</strong> 0:00:01</p>
+                </div>
+                <table>
+                    <colgroup>
+                       <col style="width: 5%;">
+                       <col style="width: 25%;">
+                       <col style="width: 10%;">
+                       <col style="width: 15%;">
+                       <col style="width: 45%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>執行動作</th>
+                            <th>狀態</th>
+                            <th>時間戳</th>
+                            <th>詳細資料</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        
+            <tr>
+                <td>1</td>
+                <td>準備階段</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-31 17:37:28</td>
+                <td><details><summary>Request (傳送前)</summary><pre><code>{
+  "測試手機": "0910000475",
+  "測試帳號": "icp10655377"
+}</code></pre></details></td>
+            </tr>
+            
+            <tr>
+                <td>2</td>
+                <td>金鑰初始化</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-31 17:37:29</td>
+                <td></td>
+            </tr>
+            
+            <tr>
+                <td>3</td>
+                <td>步驟 1: 刷新 AppToken</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-31 17:37:29</td>
+                <td><details><summary>Request (傳送前)</summary><pre><code>{
+  "Timestamp": "2025/07/31 17:37:29",
+  "CellPhone": "0910000475"
+}</code></pre></details><details><summary>Response (解密後)</summary><pre><code>{
+  "LoginTokenID": "2CEBAED5EC154BA8BEFB486E02FD03A5,36157",
+  "LoginTokenExpired": "2025-08-01T17:03:45.3",
+  "CellPhone": "0910000475",
+  "RegisterStatus": 1,
+  "Timestamp": "2025/07/31 17:36:55"
+}</code></pre></details></td>
+            </tr>
+            
+            <tr>
+                <td>4</td>
+                <td>步驟 2: 發送簡訊驗證碼</td>
+                <td class="status-failure">❌ 失敗</td>
+                <td>2025-07-31 17:37:29</td>
+                <td><details><summary>Request (傳送前)</summary><pre><code>"N/A"</code></pre></details><details><summary>Error Info</summary><pre><code>Error: 驗證次數已滿，請隔日再使用 (RtnCode: 200032)
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\icppython\fullloginnext13.py", line 352, in run_complete_flow
+    dec_resp2 = self._call_api("app/MemberInfo/SendAuthSMS", payload2,
+                               {'X-iCP-EncKeyID': str(self._aes_client_cert_id)})
+  File "C:\icppython\fullloginnext13.py", line 264, in _call_api
+    raise Exception(f"{response_json['RtnMsg']} (RtnCode: {response_json['RtnCode']})")
+Exception: 驗證次數已滿，請隔日再使用 (RtnCode: 200032)
+</code></pre></details></td>
+            </tr>
+            </tbody></table></div></body></html>
