@@ -1,0 +1,1181 @@
+
+    <html>
+    <head>
+        <title>Test Report</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        
+    <style>
+        /* Base styles are unchanged */
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        /* Other general styles remain the same */
+        .summary-container { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; text-align: center; }
+        .summary-box { padding: 20px; border-radius: 8px; flex-grow: 1; color: #fff; min-width: 150px; }
+        .summary-total { background-color: #3498db; }
+        .summary-pass { background-color: #2ecc71; }
+        .summary-fail { background-color: #e74c3c; }
+        .summary-rate { background-color: #9b59b6; }
+        .summary-box h3 { margin: 0 0 10px 0; font-size: 1.2em; }
+        .summary-box p { margin: 0; font-size: 2em; font-weight: bold; }
+        .main-content { }
+        .chart-container { text-align: center; padding: 20px; background: #fdfdfd; border-radius: 8px; border: 1px solid #eee; }
+        .chart-container img { max-width: 100%; height: auto; }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+        th, td { padding: 12px 15px; text-align: left; vertical-align: middle; border-bottom: 1px solid #e0e0e0; word-wrap: break-word; word-break: break-all; }
+        th { background-color: #34495e; color: white; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; }
+        tr:nth-child(even) { background-color: #f8f9f9; }
+        tr:hover { background-color: #e8f4f8; }
+        .status-pass { color: #27ae60; font-weight: bold; }
+        .status-fail { color: #c0392b; font-weight: bold; }
+        tr:has(td.status-fail) { background-color: #fbeaea; }
+        tr:has(td.status-fail):hover { background-color: #f7e1e1; }
+        .filepath {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .script-id {
+            color: #333;
+            white-space: nowrap;
+        }
+        .script-desc {
+            display: block;
+            padding-left: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        details { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fafafa; margin-top: 5px;}
+        summary { font-weight: bold; cursor: pointer; color: #34495e; }
+        details[open] { padding-bottom: 10px; }
+        details pre { margin-top: 10px; white-space: pre-wrap; word-wrap: break-word; background-color: #f1f1f1; padding: 10px; border-radius: 4px; color: #333; }
+        .footer { text-align: center; margin-top: 40px; font-size: 0.9em; color: #888; }
+    </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>ICP API 測試報告</h1>
+            <div class="summary-container">
+                <div class="summary-box summary-total"><h3>總共腳本</h3><p>101</p></div>
+                <div class="summary-box summary-pass"><h3>通過腳本</h3><p>91</p></div>
+                <div class="summary-box summary-fail"><h3>失敗腳本</h3><p>10</p></div>
+                <div class="summary-box summary-rate"><h3>通過比率</h3><p>90.10%</p></div>
+            </div>
+            <div class="main-content">
+                <div class="table-container">
+                    <h2>詳細測試結果</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">測試結果</th>
+                                <th style="width: 22%;">測試腳本</th>
+                                <th style="width: 10%;">執行時間</th>
+                                <th>日誌訊息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0002_CheckVerifyStatus_1</span><span class="script-desc">檢查會員驗證狀態.py</span></td>
+            <td>3.850s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0006_GetLoginInfo_1</span><span class="script-desc">取得登入回傳資訊.py</span></td>
+            <td>3.272s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0011_ChangeLoginPwd_1</span><span class="script-desc">變更登入密碼.py</span></td>
+            <td>3.157s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre><Response [200]>
+RtnCode: 200002
+RtnMsg: 請輸入6-20個半形英數混合之密碼
+EncData: LAyz/nDIuU+BMLP5KHFijAzXtkPpVRGInSs1OMdXPB0c1WnAisvfNoyyyLJcvB7T
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0011_ChangeLoginPwd_1變更登入密碼.py", line 50, in <module>
+    with open(test_data_file, 'r') as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\icppython\\OTestData\\ICPAPI\\M0093_ChangeLoginPwd_1.txt'</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0019_GetPasswordStatus_1</span><span class="script-desc">取得密碼設定開關狀態.py</span></td>
+            <td>3.142s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0021_GetMemberPreferences_1</span><span class="script-desc">取得會員偏好設定.py</span></td>
+            <td>3.813s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0022_UpdateNickName_1</span><span class="script-desc">修改暱稱.py</span></td>
+            <td>3.242s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0023_UpdateEmailAddress_1</span><span class="script-desc">修改Email.py</span></td>
+            <td>3.110s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0026_GetListBankInfo_1</span><span class="script-desc">取得銀行清單.py</span></td>
+            <td>3.555s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0027_BankAccountAuth_1</span><span class="script-desc">銀行帳戶驗證.py</span></td>
+            <td>3.839s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre><Response [200]>
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0027_BankAccountAuth_1銀行帳戶驗證.py", line 36, in <module>
+    enc_text = response_json['EncData']
+               ~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'EncData'</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0028_GetWithdrawBalanceInfo_1</span><span class="script-desc">取得提領資訊.py</span></td>
+            <td>3.261s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0029_SetMemberAgree_1</span><span class="script-desc">更新會員同意項目.py</span></td>
+            <td>3.184s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0030_GetRangeNotifyMessageList_1</span><span class="script-desc">取得指定範圍訊息中心清單.py</span></td>
+            <td>3.233s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0036_GetBindAccountList_1</span><span class="script-desc">取得綁定銀行帳號.py</span></td>
+            <td>3.996s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0038_SetLoginPwdIgnorDate_1</span><span class="script-desc">記錄修改登入密碼.py</span></td>
+            <td>3.124s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0039_SetSecPwdIgnorDate_1</span><span class="script-desc">記錄略過修改安全密碼.py</span></td>
+            <td>3.172s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0040_SetGraphicLockIgnorDate_1</span><span class="script-desc">記錄略過修改圖形密碼.py</span></td>
+            <td>3.220s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0042_GetEInvoiceCarrierInfo_1</span><span class="script-desc">取得載具資訊.py</span></td>
+            <td>3.944s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0043_AuthCellPhoneCarrier_1</span><span class="script-desc">驗證手機條碼.py</span></td>
+            <td>3.269s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0044_QueryEinvoiceList_1</span><span class="script-desc">取得發票清單.py</span></td>
+            <td>3.116s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0046_GetAccountStatusInfo_1</span><span class="script-desc">取得帳戶狀態資訊.py</span></td>
+            <td>3.184s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0048_getAppXmlSetting_1</span><span class="script-desc">取得單選xml.py</span></td>
+            <td>3.581s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0049_GetFriendInviteCounts_1</span><span class="script-desc">取得交友邀請數.py</span></td>
+            <td>3.434s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0050_ListFriendInviteReceive_1</span><span class="script-desc">取得已接收好友邀請清單.py</span></td>
+            <td>3.133s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0051_ListFriendInviteSend_1</span><span class="script-desc">取得已發送好友邀請清單.py</span></td>
+            <td>3.627s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0056_AddFriends_1</span><span class="script-desc">新增好友.py</span></td>
+            <td>3.594s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0057_QueryChatMemberByCellPhone_1</span><span class="script-desc">手機號碼搜尋會員資料.py</span></td>
+            <td>3.473s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0058_GetMaintainStatus_1</span><span class="script-desc">取得系統維護開關.py</span></td>
+            <td>3.159s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0063ListFriends_1</span><span class="script-desc">取得好友列表.py</span></td>
+            <td>3.219s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0064_ListFriendsUpdate_1</span><span class="script-desc">更新好友列表.py</span></td>
+            <td>3.601s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0065_ListDialog_1</span><span class="script-desc">取得聊天列表.py</span></td>
+            <td>3.187s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0075_ListBankBranch_1</span><span class="script-desc">取得分行代碼清單.py</span></td>
+            <td>2.876s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0076_ListSynNotifyMessage_1</span><span class="script-desc">訊息中心同步.py</span></td>
+            <td>2.726s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0078_CheckTransferReceiver_1</span><span class="script-desc">取得轉入者資料.py</span></td>
+            <td>1.984s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0079ListChatMember_1</span><span class="script-desc">取得會員的聊天會員資料.py</span></td>
+            <td>2.971s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0080_ListBlackList_1</span><span class="script-desc">取得黑名單列表.py</span></td>
+            <td>2.836s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0084_GetListOnlineBankInfo_1</span><span class="script-desc">取得線上開戶銀行清單.py</span></td>
+            <td>3.130s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0085_GetAD_1</span><span class="script-desc">取得首頁banner廣告.py</span></td>
+            <td>3.147s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0089_ICash2BindList_1</span><span class="script-desc">取得icash2.0綁icashpay列表.py</span></td>
+            <td>3.342s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0090_ICash2Verify_1</span><span class="script-desc">檢核icash2.0卡綁定狀態.py</span></td>
+            <td>3.390s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0093_GetMainCampaignList_1</span><span class="script-desc">取得行銷活動清單.py</span></td>
+            <td>3.306s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0096_ICash2BindInfo_1</span><span class="script-desc">取得綁定資訊.py</span></td>
+            <td>2.915s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0100_ReAuthID_1</span><span class="script-desc">會員資料重新驗證.py</span></td>
+            <td>3.231s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0101_QueryMemberOpPoint_1</span><span class="script-desc">取得會員OP點數.py</span></td>
+            <td>4.022s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0103_HomeBankChkAgreedTerms_1</span><span class="script-desc">中國信託HomeBank同意確認.py</span></td>
+            <td>3.134s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0104_QueryTransferInfoByCellPhoneOrIcpmid_1</span><span class="script-desc">搜尋icashPay聯絡人.py</span></td>
+            <td>2.980s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0105_GetInsuranceAD2022_1</span><span class="script-desc">富邦產險廣告資料查詢(2022).py</span></td>
+            <td>3.276s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0108_EditEcFriend_1</span><span class="script-desc">編緝好友.py</span></td>
+            <td>3.399s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0111_UpdateMemberSearchEnableStatus_1</span><span class="script-desc">設定是否可被搜尋_是.py</span></td>
+            <td>3.226s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0111_UpdateMemberSearchEnableStatus_2</span><span class="script-desc">設定是否可被搜尋_否.py</span></td>
+            <td>2.938s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0125_GetAccountRecordList_1</span><span class="script-desc">取得帳戶記錄列表.py</span></td>
+            <td>3.279s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0127_QueryMMember_1</span><span class="script-desc">查詢綁定會員特約機構.py</span></td>
+            <td>3.233s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0131_QueryMemberPointSwitch_1</span><span class="script-desc">查詢會員OP開關.py</span></td>
+            <td>3.392s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0132_ChangeMemberPointSwitch_1</span><span class="script-desc">更新會員OP開關_開.py</span></td>
+            <td>3.006s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0132_ChangeMemberPointSwitch_2</span><span class="script-desc">更新會員OP開關_關.py</span></td>
+            <td>3.389s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0133_GetActivityAD_1</span><span class="script-desc">首頁霸屏廣告資料查詢.py</span></td>
+            <td>3.403s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0138_getTransferReceiverInfo_1</span><span class="script-desc">取得轉入者資料_電支帳號格式錯誤.py</span></td>
+            <td>3.326s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0138_getTransferReceiverInfo_2</span><span class="script-desc">取得轉入 者資料_資料有誤.py</span></td>
+            <td>2.951s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0138_getTransferReceiverInfo_3</span><span class="script-desc">取得轉入者資料.py</span></td>
+            <td>3.340s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0139_getPaymentToolAD_1</span><span class="script-desc">支付工具廣告查詢(2022).py</span></td>
+            <td>3.347s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0140_GetBankDiscount_1</span><span class="script-desc">取得銀行優惠廣告(2022).py</span></td>
+            <td>3.355s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0142_getOnlinePaymentBillList_1</span><span class="script-desc">取得線上繳費主功能資訊(2022).py</span></td>
+            <td>2.852s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre>Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x000001DD2DE7C2F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/getOnlinePaymentBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001DD2DE7C2F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0142_getOnlinePaymentBillList_1取得線上繳費主功能資訊(2022).py", line 29, in <module>
+    response = requests.post(url, headers=headers, data=data, verify=False)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/getOnlinePaymentBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001DD2DE7C2F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0143_getOnlinePaymentBitsList_1</span><span class="script-desc">取得項目之細項資訊(2022).py</span></td>
+            <td>3.214s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre>Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x00000249E91A02F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/getOnlinePaymentBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000249E91A02F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0143_getOnlinePaymentBitsList_1取得項目之細項資訊(2022).py", line 29, in <module>
+    response = requests.post(url, headers=headers, data=data, verify=False)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/getOnlinePaymentBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000249E91A02F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0144_GetCommonBillList_1</span><span class="script-desc">取得常用帳單(2022).py</span></td>
+            <td>3.301s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre>Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x000002212B6602F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/GetCommonBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002212B6602F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0144_GetCommonBillList_1取得常用帳單(2022).py", line 29, in <module>
+    response = requests.post(url, headers=headers, data=data, verify=False)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/GetCommonBillList (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002212B6602F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0145_AddCommonBill_1</span><span class="script-desc">新增常用帳單(2022).py</span></td>
+            <td>3.128s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre>Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Python\Lib\site-packages\urllib3\connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x00000277FF6202F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Python\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Python\Lib\site-packages\urllib3\util\retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/AddCommonBill (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000277FF6202F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0145_AddCommonBill_1新增常用帳單(2022).py", line 29, in <module>
+    response = requests.post(url, headers=headers, data=data, verify=False)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python\Lib\site-packages\requests\adapters.py", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='icp-pluspayment-stage.icashpay.com.tw', port=443): Max retries exceeded with url: /app/OnlinePayment/AddCommonBill (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000277FF6202F0>: Failed to resolve 'icp-pluspayment-stage.icashpay.com.tw' ([Errno 11001] getaddrinfo failed)"))</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0149_CheckIsOP_1</span><span class="script-desc">檢查是否為OP會員(2022)False.py</span></td>
+            <td>4.049s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0149_CheckIsOP_1</span><span class="script-desc">檢查是否為OP會員(2022)True.py</span></td>
+            <td>3.638s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0152_CheckKeyStatus_1</span><span class="script-desc">確認金鑰是否為主要Key.py</span></td>
+            <td>3.270s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0153_getLoginRecord_1</span><span class="script-desc">查詢登入記錄(2022).py</span></td>
+            <td>2.881s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0154_GetMarquee_</span><span class="script-desc">跑馬嬁公告(2022).py</span></td>
+            <td>3.285s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0155_getPcodeBankList_</span><span class="script-desc">取得Pcode2566銀行清單.py</span></td>
+            <td>3.014s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0157_GetCardBannerInfo_1</span><span class="script-desc">取得icash2.0首頁廣告(2022).py</span></td>
+            <td>3.214s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0157_GetCardPageInfo_</span><span class="script-desc">取得icash2.0首頁(2022).py</span></td>
+            <td>3.481s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0164_GetPushList_1</span><span class="script-desc">取得推播通知(活動通知).py</span></td>
+            <td>4.803s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">M0165_SetPushRead_1</span><span class="script-desc">設定推播通知(已讀).py</span></td>
+            <td>2.917s</td>
+            
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。<details><summary>完整輸出日誌</summary><pre><Response [200]>
+Traceback (most recent call last):
+  File "C:\icppython\OTestCase\ICPAPI\M0165_SetPushRead_1設定推播通知(已讀).py", line 36, in <module>
+    enc_text = response_json['EncData']
+               ~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'EncData'</pre></details></pre>
+                    </details>
+                </td>
+                
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0167_GetAPPAd_1APP</span><span class="script-desc">首頁廣告.py</span></td>
+            <td>3.010s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0168_GetAPPAdActivity_1APP</span><span class="script-desc">廣告活動內頁.py</span></td>
+            <td>2.853s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0169_GetAPPAdUpdate_1</span><span class="script-desc">廣告最後更新時間.py</span></td>
+            <td>3.311s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0169_GetAPPAdUpdate_2</span><span class="script-desc">廣告最後更新時間.py</span></td>
+            <td>3.152s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0173_ListDialogWithEc_1</span><span class="script-desc">查詢轉帳聯絡人清單.py</span></td>
+            <td>3.249s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M0174_GetAllAPPAd_1APP</span><span class="script-desc">廣告.py</span></td>
+            <td>3.367s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">M097_GetFinanceAD_1</span><span class="script-desc">金融廣告資料查詢.py</span></td>
+            <td>3.237s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">MD213_SetTradeRegion_1</span><span class="script-desc">會員交易地區KOR.py</span></td>
+            <td>3.084s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">MD213_SetTradeRegion_1</span><span class="script-desc">會員交易地區TWN.py</span></td>
+            <td>3.271s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0001_CreateBarCode_1</span><span class="script-desc">產生付款碼.py</span></td>
+            <td>3.293s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0002_GetMemberPaymentInfo_1</span><span class="script-desc">取得會員全付款方式.py</span></td>
+            <td>3.235s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0004_GetTotalCoins_1</span><span class="script-desc">取得帳戶餘額.py</span></td>
+            <td>3.108s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0005_GetTransferToken1_</span><span class="script-desc">取得轉帳Token.py</span></td>
+            <td>3.282s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0006_GetListChannelInfo_1</span><span class="script-desc">取得儲值通路清單.py</span></td>
+            <td>3.222s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0007_GetTopUpBarCode_1</span><span class="script-desc">產生通路儲值儲碼.py</span></td>
+            <td>3.205s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0007_GetTopUpBarCode_1</span><span class="script-desc">產生通路儲值儲碼_發票.py</span></td>
+            <td>3.120s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0007_GetTopUpBarCode_1</span><span class="script-desc">產生通路儲值儲碼_自帶杯.py</span></td>
+            <td>3.309s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0008_GetTopUpByAccountLinkInfo_1</span><span class="script-desc">取得連結帳戶儲值資料.py</span></td>
+            <td>3.242s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">P0010_TopUpByAccountLink_1</span><span class="script-desc">連結帳戶儲值.py</span></td>
+            <td>3.172s</td>
+            <td>Test Failed. Expected RtnCode: 1. Actual RtnCode: 2090. RtnMsg: 取得連結扣款帳戶綁定資訊失敗</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0014_GetAutoTopUpInfo_1</span><span class="script-desc">取得自動儲值資料.py</span></td>
+            <td>3.139s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">P0018_DoQRPayment_1</span><span class="script-desc">確認支付Qrcode_褔容大飯店.py</span></td>
+            <td>5.561s</td>
+            <td>Test Failed. Expected RtnCode: 1. Actual RtnCode: 7306. RtnMsg: 扣款金額不足</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0025_CreateTrafficQRCode_1</span><span class="script-desc">取得乘車碼.py</span></td>
+            <td>2.614s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0026_GetAvailableBalance_1</span><span class="script-desc">取得餘額.py</span></td>
+            <td>2.730s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0030_GetFishHandlingCharge1001_1</span><span class="script-desc">查詢轉帳手續費1001元.py</span></td>
+            <td>1.544s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0030_GetFishHandlingCharge100_1</span><span class="script-desc">查詢轉帳手續費100元.py</span></td>
+            <td>1.357s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-pass">Pass</td>
+            <td class="filepath"><span class="script-id">P0030_GetFishHandlingCharge501_1</span><span class="script-desc">查詢轉帳手續費501元.py</span></td>
+            <td>1.300s</td>
+            <td>N/A</td>
+        </tr>
+        
+        <tr>
+            <td class="status-fail">Fail</td>
+            <td class="filepath"><span class="script-id">P0034_CheckFiscDoubleValidation_1</span><span class="script-desc">確認線上繳費訂單資訊(2022).py</span></td>
+            <td>2.116s</td>
+            <td>Test Failed. Expected RtnCode: 0. Actual RtnCode: 1</td>
+        </tr>
+        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="chart-container" style="margin: 40px auto 0; max-width: 600px;">
+                <h2>測試結果比例</h2>
+                <img src='data:image/png;base64,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' alt='Pass/Fail Ratio Pie Chart'/>
+            </div>
+            <div class="footer">
+                <p>Report generated on 2025-07-30 15:51:06</p>
+                <p>Thank you for reviewing the API Test Report!</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    

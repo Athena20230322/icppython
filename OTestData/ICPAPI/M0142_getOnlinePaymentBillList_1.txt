@@ -1,2 +1,1 @@
 RtnCode,1
-RtnMsg,null
