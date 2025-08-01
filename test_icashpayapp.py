@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import time
 import os
 import random
@@ -13,11 +10,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-# --- ✨ Capabilities 設定 (維持不變) ✨ ---
+# --- ✨ Capabilities 設定 (已修改為無頭模式) ---
 capabilities = {
     "platformName": "Android",
     "appium:platformVersion": "14",
+ Updated upstream
     "appium:deviceName": "R5CR517P4XL",
+
+
+    # --- ✨ 無頭模式 (Headless Mode) 設定 ✨ ---
+    # 說明：無頭模式僅適用於「Android 模擬器」，不適用於真實手機。
+    # Appium 會在背景幫您啟動並運行指定的模擬器，但不會顯示其視窗。
+
+    # 1. 註解或刪除您原本的實體手機 deviceName
+    # "appium:deviceName": "R5CR517P4XL",
+
+    # 2. 指定您要使用的模擬器名稱 (此名稱需與您在 AVD Manager 中建立的相符)
+    "appium:avd": "My_Emulator_34",  # <-- !! 請務必換成您自己的模擬器(AVD)名稱 !!
+
+    # 3. 啟用無頭模式
+    "appium:isHeadless": True,
+
+    Stashed changes
     "appium:appPackage": "tw.com.icash.a.icashpay.debuging",
     "appium:noReset": True,
     "appium:automationName": "UiAutomator2",
@@ -27,10 +41,11 @@ capabilities = {
     "appium:uiautomator2ServerLaunchTimeout": 60000
 }
 
+
 appium_options = UiAutomator2Options().load_capabilities(capabilities)
 APPIUM_SERVER_URL = 'http://127.0.0.1:4723'
 
-# --- ✨ 所有函式維持不變 ✨ ---
+# --- ✨ 全域變數 ---
 INFO_FILE_PATH = r"C:\icppython\icashpayappinfo.txt"
 DEFAULT_START_PHONE = "0960000102"
 
@@ -64,110 +79,58 @@ def write_registration_info(file_path, phone, account, id_card):
         print(f"\n -> 寫入檔案時發生錯誤: {e}")
 
 
-# --- ✨ 修正：產生有效的台灣身分證字號 ✨ ---
 def generate_taiwan_id():
-    """
-    根據台灣身分證字號規則產生一組有效的隨機號碼。
-    """
-    # 縣市代碼與其對應數值的字典
     letter_map = {
         'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, 'G': 16, 'H': 17, 'I': 34,
         'J': 18, 'K': 19, 'L': 20, 'M': 21, 'N': 22, 'O': 35, 'P': 23, 'Q': 24, 'R': 25,
         'S': 26, 'T': 27, 'U': 28, 'V': 29, 'W': 32, 'X': 30, 'Y': 31, 'Z': 33
     }
-
-    # 隨機選擇一個縣市開頭字母
     first_letter = random.choice(list(letter_map.keys()))
-
-    # 隨機選擇性別碼 (1=男, 2=女)
     gender_digit = str(random.choice([1, 2]))
-
-    # 產生 7 位隨機數字
     middle_digits = ''.join(random.choices(string.digits, k=7))
-
-    # --- 開始計算校驗碼 ---
-
-    # 將開頭字母轉換為兩位數字
     letter_value = letter_map[first_letter]
     n1 = letter_value // 10
     n2 = letter_value % 10
-
-    # 組合出身分證號的前8碼數字部分 (性別 + 7位隨機數)
     body_digits = gender_digit + middle_digits
-
-    # 根據加權規則計算總和
-    # 權重: 1, 9, 8, 7, 6, 5, 4, 3, 2, 1
-    total_sum = n1 * 1 + n2 * 9
-
-    # ✨ 修正：補上缺少的加權值 1
     weights = [8, 7, 6, 5, 4, 3, 2, 1]
-
+    total_sum = n1 * 1 + n2 * 9
     for i in range(len(body_digits)):
         total_sum += int(body_digits[i]) * weights[i]
-
-    # 計算校驗碼 (最後一位)
     checksum = (10 - (total_sum % 10)) % 10
-
-    # 組合出完整的身分證字號
     valid_id = f"{first_letter}{body_digits}{checksum}"
-
     print(f"\n -> 產生有效身分證號: {valid_id}")
     return valid_id
 
 
-# --- ✨ 滑動手勢輔助函式 (維持不變) ✨ ---
 def swipe_by_coordinates(driver, x, start_y, end_y, swipes=1):
-    """
-    在指定的固定座標區域執行滑動手勢
-
-    :param driver: Appium driver 物件
-    :param x: 滑動的 X 軸座標
-    :param start_y: 滑動的起始 Y 軸座標
-    :param end_y: 滑動的結束 Y 軸座標
-    :param swipes: 滑動次數
-    """
-    # 根據起始和結束Y座標判斷滑動方向
-    # 如果 start_y < end_y，代表手指向下移動，內容向上滾動（數字變小）
     direction = 'down' if start_y < end_y else 'up'
     print(f"    -> 在座標 x={x} 從 y={start_y} 滑動到 y={end_y} (方向: {direction})")
-
     for i in range(swipes):
         try:
-            # 使用 ADB shell input swipe 更為直接可靠
-            command_args = ['input', 'swipe', str(x), str(start_y), str(x), str(end_y), '300']  # 300ms duration
+            command_args = ['input', 'swipe', str(x), str(start_y), str(x), str(end_y), '300']
             driver.execute_script('mobile: shell', {
                 'command': command_args[0],
                 'args': command_args[1:]
             })
-            time.sleep(0.5)  # 每次滑動後停頓更久，確保動畫完成
+            time.sleep(0.5)
         except Exception as e:
             print(f"      -> 第 {i + 1} 次滑動時發生錯誤: {e}")
             pass
 
 
-# --- ✨ 新增：透過 Keycode 輸入 PIN 碼的輔助函式 ✨ ---
 def enter_pin_by_keycode(driver, pin):
-    """
-    使用 Android Keycode 來輸入數字 PIN 碼。
-
-    :param driver: Appium driver 物件
-    :param pin: 要輸入的 PIN 碼字串, e.g., "246790"
-    """
-    # Android 數字 Keycode 對照表
-    # KEYCODE_0=7, KEYCODE_1=8, ..., KEYCODE_9=16
     keycode_map = {str(i): i + 7 for i in range(10)}
-
     print(f"    -> 準備使用 Keycode 輸入 PIN: {pin}")
     for digit in pin:
         if digit in keycode_map:
             driver.press_keycode(keycode_map[digit])
             print(f"      -> 已輸入數字: {digit}")
-            time.sleep(0.2)  # 模擬輸入間隔
+            time.sleep(0.2)
         else:
             print(f"      -> 警告：字元 '{digit}' 不是有效的數字，已略過。")
 
 
-# --- ✨ 在執行測試前，就先產生並寫入新資料 (維持不變) ✨ ---
+# --- ✨ 在執行測試前，就先產生並寫入新資料 ---
 print("步驟 0: 準備新的註冊資料並預先寫入紀錄檔...")
 next_phone, new_account = get_next_registration_info(INFO_FILE_PATH)
 new_id_card = generate_taiwan_id()
@@ -181,115 +144,87 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         print(f"本次使用帳號: {new_account}")
         print(f"本次使用身分證號: {new_id_card}")
 
-        # --- 步驟 1 到 3 維持不變 ---
+        # --- 步驟 1 到 3 ---
         print("\n步驟 1: 等待並點擊 '付款碼' 按鈕...")
-        payment_code_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/home_text"))
-        )
-        payment_code_button.click()
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/home_text"))).click()
         print(" -> '付款碼' 點擊成功！")
 
         print("\n步驟 2: 等待並點擊 '登入/註冊' 按鈕...")
-        login_register_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/text"))
-        )
-        login_register_button.click()
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/text"))).click()
         print(" -> '登入/註冊' 點擊成功！")
 
         print("\n步驟 3: 等待並點擊 '註冊icash Pay' 按鈕...")
-        register_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/btRegister"))
-        )
-        register_button.click()
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/btRegister"))).click()
         print(" -> '註冊icash Pay' 點擊成功！")
 
+        # --- 步驟 4: 填寫註冊資料 (使用之前正常的勾選邏輯) ---
         print("\n步驟 4: 開始填寫註冊資料...")
-        phone_field = WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/user_phones_text"))
-        )
-        phone_field.send_keys(next_phone)
-        account_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_code_text")
-        account_field.send_keys(new_account)
-        password_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_pwd_text")
-        password_field.send_keys("Aa123456")
-        confirm_password_field = driver.find_element(by=AppiumBy.ID,
-                                                      value="tw.com.icash.a.icashpay.debuging:id/user_double_confirm_pwd_text")
-        confirm_password_field.send_keys("Aa123456")
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located(
+            (AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/user_phones_text"))).send_keys(next_phone)
+        driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_code_text").send_keys(
+            new_account)
+        driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/user_pwd_text").send_keys(
+            "Aa123456")
+        driver.find_element(by=AppiumBy.ID,
+                            value="tw.com.icash.a.icashpay.debuging:id/user_double_confirm_pwd_text").send_keys(
+            "Aa123456")
 
-        # --- ✨ 修正：使用正確的 CheckBox ID 點擊核取方塊 ✨ ---
-        checkbox_ids = [
-            "tw.com.icash.a.icashpay.debuging:id/cb_register_policies",  # 我已詳閱並同意使用者定型化契約...
-            "tw.com.icash.a.icashpay.debuging:id/cb_op_register_policies",  # 我同意愛金卡公司將此手機號碼傳送予統一超商...
-            "tw.com.icash.a.icashpay.debuging:id/cb_register_policies_2"  # 我同意註冊帳戶帳戶戶為正常消費/轉帳/儲值/提領等交易使用...
-        ]
+        print(" -> 勾選前兩個同意選項...")
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+            (AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/cb_register_policies"))).click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+            (AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/cb_op_register_policies"))).click()
 
-        for i, cb_id in enumerate(checkbox_ids):
-            try:
-                print(f" -> 嘗試勾選核取方塊 (ID: {cb_id})...")
-                checkbox = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((AppiumBy.ID, cb_id))
-                )
-                # 檢查是否已經勾選，如果沒有才點擊
-                if checkbox.get_attribute("checked") == "false":
-                    checkbox.click()
-                    print(f"    -> 已勾選核取方塊 (ID: {cb_id}).")
-                else:
-                    print(f"    -> 核取方塊已勾選，無需重複點擊 (ID: {cb_id}).")
-                time.sleep(0.5)  # 每次點擊後稍作延遲
+        print(" -> 向上滑動頁面以顯示所有選項...")
+        window_size = driver.get_window_size()
+        start_x_swipe = window_size['width'] // 2
+        start_y_swipe = int(window_size['height'] * 0.7)
+        end_y_swipe = int(window_size['height'] * 0.3)
+        swipe_by_coordinates(driver, start_x_swipe, start_y_swipe, end_y_swipe, swipes=1)
+        time.sleep(1)
 
-                # ✨ 新增：在勾選第二個核取方塊後進行滑動 ✨
-                if i == 1:  # 第二個核取方塊 (索引為 1)
-                    print("    -> 已勾選第二個核取方塊，執行向上滑動以顯示更多內容...")
-                    window_size = driver.get_window_size()
-                    start_x = window_size['width'] // 2
-                    start_y = int(window_size['height'] * 0.7)  # 從約70%高度開始滑動
-                    end_y = int(window_size['height'] * 0.3)    # 滑動到約30%高度
+        print(" -> 勾選第三個核取方塊...")
+        try:
+            cb3_id = "tw.com.icash.a.icashpay.debuging:id/cb_register_policies_2"
+            checkbox3 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((AppiumBy.ID, cb3_id)))
+            if not checkbox3.is_selected():
+                checkbox3.click()
+            print("   -> 已勾選第三個核取方塊。")
+        except Exception as e:
+            print(f" -> 點擊第三個核取方塊時發生錯誤: {e}")
 
-                    command_args = ['input', 'swipe', str(start_x), str(start_y), str(start_x), str(end_y), '500']
-                    driver.execute_script('mobile: shell', {
-                        'command': command_args[0],
-                        'args': command_args[1:]
-                    })
-                    time.sleep(1) # 給予足夠時間讓頁面滾動完成
-                    print("    -> 頁面已向上滑動。")
+        print(" -> 為確保 '下一步' 按鈕可見，再次向上滑動...")
+        swipe_by_coordinates(driver, start_x_swipe, start_y_swipe, end_y_swipe, swipes=1)
+        time.sleep(1)
 
-            except TimeoutException:
-                print(f" -> 警告：未能找到或點擊 ID 為 '{cb_id}' 的核取方塊。請檢查頁面結構或 ID 是否正確。")
-            except Exception as e:
-                print(f" -> 點擊核取方塊 (ID: {cb_id}) 時發生錯誤: {e}")
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/leftButton"))).click()
+        print(" -> 步驟 4 完成！")
 
-        # 點擊「下一步」按鈕
-        next_step_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/leftButton"))
-        )
-        next_step_button.click()
-        print(" -> 步驟 4 完成！已點擊 '下一步' 按鈕。")
-
-        # --- 步驟 5 到 9 維持不變 ---
+        # --- 步驟 5 和 6 ---
         print("\n步驟 5: 等待並點擊 '送出' 按鈕...")
-        submit_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/leftButton"))
-        )
-        submit_button.click()
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/leftButton"))).click()
         print(" -> '送出' 點擊成功！")
 
         print("\n步驟 6: 等待並點擊 '國民身分證'...")
-        id_card_option = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.XPATH, "//android.widget.TextView[@text='國民身分證']"))
-        )
-        id_card_option.click()
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((AppiumBy.XPATH, "//android.widget.TextView[@text='國民身分證']"))).click()
         print(" -> '國民身分證' 點擊成功！")
 
+        # =======================================================================
+        # --- ✨ 步驟 7: 整合您提供且可正常執行的身分驗證程式碼 ✨ ---
+        # =======================================================================
         print("\n步驟 7: 開始填寫身分驗證資料...")
-        # --- ✨ 7.1 修正：調整操作順序 ✨ ---
-        # 步驟 7.1: 輸入姓名
         name_field = WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((AppiumBy.ID, "tw.com.icash.a.icashpay.debuging:id/et_user_name"))
         )
         name_field.send_keys("測試一")
         print(" -> 已輸入姓名: 測試一")
 
-        # 步驟 7.2: 處理出生年月日
         print(" -> 處理出生年月日...")
         dob_target_id = "tw.com.icash.a.icashpay.debuging:id/textView13"
         print(f"    -> 使用 ID 定位點擊目標 '{dob_target_id}'")
@@ -318,25 +253,15 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         )
         print("    -> 日期選擇器已出現")
 
-        # --- ✨ 終極修正：精準調整滑動次數 ✨ ---
-        # 說明：Y 軸座標從 1000 (上方) -> 1200 (下方)，模擬手指向下滑動，讓滾輪向上滾動（數字變小）。
-
-        # 滾動年份 (X座標約在 210 附近)
-        # 計算方式：從民國100年滾動到89年，約需 11 年，每次滑動約 4 年，11 / 4 ≈ 3 次。
         print("    -> 開始滾動年份...")
         swipe_by_coordinates(driver, x=210, start_y=1000, end_y=1200, swipes=3)
 
-        # 滾動月份 (X座標約在 555 附近)
-        # 假設預設是 7 月，目標是 1 月，約需滑動 6 次。
         print("    -> 開始滾動月份...")
         swipe_by_coordinates(driver, x=555, start_y=1000, end_y=1200, swipes=8)
 
-        # 滾動日期 (X座標約在 885 附近)
-        # 假設預設是 20 日，目標是 1 日，約需滑動 19 次。
         print("    -> 開始滾動日期...")
         swipe_by_coordinates(driver, x=885, start_y=1000, end_y=1200, swipes=25)
 
-        # 點擊確定按鈕 (改用最可靠的 ADB Tap)
         submit_button = driver.find_element(*submit_button_locator)
         location = submit_button.location
         size = submit_button.size
@@ -350,12 +275,10 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         })
         print(" -> 已確認出生年月日")
 
-        # 步驟 7.3: 最後才輸入身分證號
         id_no_field = driver.find_element(by=AppiumBy.ID, value="tw.com.icash.a.icashpay.debuging:id/et_id_no")
         id_no_field.send_keys(new_id_card)
         print(f" -> 已輸入身分證號: {new_id_card}")
 
-        # 步驟 7.4: 處理身分證發證日期 (不滾動，直接確定)
         print(" -> 處理身分證發證日期...")
         issue_date_target_id = "tw.com.icash.a.icashpay.debuging:id/textView43"
         print(f"    -> 使用 ID 定位點擊目標 '{issue_date_target_id}'")
@@ -383,7 +306,6 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
             EC.presence_of_element_located(submit_button_locator)
         )
         print("    -> 日期選擇器已出現")
-
         print("    -> 不執行滾動，直接接受預設日期")
 
         submit_button = driver.find_element(*submit_button_locator)
@@ -399,12 +321,11 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         })
         print(" -> 已確認身分證發證日期")
 
-        # 步驟 7.5: 處理身分證發證地點
         print(" -> 處理身分證發證地點...")
         issue_location_id = "tw.com.icash.a.icashpay.debuging:id/tv_issue_loc"
         print(f"    -> 點擊 '{issue_location_id}'")
         driver.find_element(by=AppiumBy.ID, value=issue_location_id).click()
-        time.sleep(1)  # 等待彈窗
+        time.sleep(1)
 
         new_taipei_xpath = "//android.widget.TextView[@text='北縣 / 新北市']"
         print(f"    -> 選擇 '{new_taipei_xpath}'")
@@ -413,30 +334,25 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         ).click()
         print(" -> 已選擇發證地點: 北縣 / 新北市")
 
-        # 步驟 7.6: 選擇領補換類別
         print(" -> 選擇領補換類別...")
         first_issue_id = "tw.com.icash.a.icashpay.debuging:id/rb_register_id_issued_first"
         print(f"    -> 點擊 '{first_issue_id}' (初發)")
         driver.find_element(by=AppiumBy.ID, value=first_issue_id).click()
         print(" -> 已選擇領補換類別: 初發")
 
-        # --- ✨ 7.7 新增：向上滑動頁面以顯示「下一步」按鈕 ✨ ---
         print(" -> 向上滑動頁面...")
-        # 獲取螢幕尺寸以進行相對滑動，從螢幕80%高度滑動到20%高度
         window_size = driver.get_window_size()
         start_x = window_size['width'] // 2
         start_y = int(window_size['height'] * 0.8)
         end_y = int(window_size['height'] * 0.2)
-
-        command_args = ['input', 'swipe', str(start_x), str(start_y), str(start_x), str(end_y), '500']  # 500ms duration
+        command_args = ['input', 'swipe', str(start_x), str(start_y), str(start_x), str(end_y), '500']
         driver.execute_script('mobile: shell', {
             'command': command_args[0],
             'args': command_args[1:]
         })
-        time.sleep(1)  # 等待滑動完成
+        time.sleep(1)
         print(" -> 頁面已向上滑動")
 
-        # 步驟 7.8: 點擊最後的「下一步」
         print(" -> 點擊最後的下一步按鈕...")
         final_next_button_id = "tw.com.icash.a.icashpay.debuging:id/leftButton"
         print(f"    -> 點擊 '{final_next_button_id}'")
@@ -445,7 +361,6 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         ).click()
         print(" -> 已點擊最後的下一步")
 
-        # 步驟 7.9: 點擊資料確認頁的「確認」按鈕
         print(" -> 點擊資料確認頁的「確認」按鈕...")
         confirm_data_button_id = "tw.com.icash.a.icashpay.debuging:id/leftButton"
         print(f"    -> 等待並點擊 '{confirm_data_button_id}'")
@@ -454,62 +369,32 @@ with webdriver.Remote(APPIUM_SERVER_URL, options=appium_options) as driver:
         ).click()
         print(" -> 已點擊「確認」")
 
-        # --- ✨ 步驟 8: 設定安全密碼 ✨ ---
+        # --- 步驟 8 和 9 ---
         print("\n步驟 8: 設定安全密碼...")
         security_pin = "246790"
-
-        # 等待「請輸入安全密碼」的標題出現，確保頁面已載入
         pin_description_id = "tw.com.icash.a.icashpay.debuging:id/security_password_description"
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((AppiumBy.ID, pin_description_id))
-        )
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.ID, pin_description_id)))
         print(" -> 安全密碼頁面已載入")
 
-        # 點擊第一個密碼輸入區以觸發鍵盤
         first_pin_area_id = "tw.com.icash.a.icashpay.debuging:id/nativeKeyboardPasswordLayout"
-        print(f"    -> 點擊第一個密碼輸入區 '{first_pin_area_id}'")
         driver.find_element(AppiumBy.ID, first_pin_area_id).click()
         time.sleep(1)
-
-        # 輸入第一組 PIN
         enter_pin_by_keycode(driver, security_pin)
 
-        # 點擊第二個密碼輸入區
         second_pin_area_id = "tw.com.icash.a.icashpay.debuging:id/doubleConfirmNativeKeyboardPasswordLayout"
-        print(f"    -> 點擊第二個密碼輸入區 '{second_pin_area_id}'")
         driver.find_element(AppiumBy.ID, second_pin_area_id).click()
         time.sleep(1)
-
-        # 輸入第二組 PIN
         enter_pin_by_keycode(driver, security_pin)
         print(" -> 已完成兩次密碼輸入")
 
-        # --- ✨ 步驟 8.1: 點擊最後的「確認」按鈕 ✨ ---
-        print(" -> 點擊最後的「確認」按鈕...")
         final_confirm_button_id = "tw.com.icash.a.icashpay.debuging:id/tvConfirm"
-        print(f"    -> 等待並點擊 '{final_confirm_button_id}'")
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, final_confirm_button_id))
-        ).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((AppiumBy.ID, final_confirm_button_id))).click()
         print(" -> 已點擊最終「確認」")
 
-        # --- ✨ 步驟 9: 點擊最後的「下一步」按鈕 ✨ ---
         print("\n步驟 9: 點擊最後的「下一步」按鈕...")
         final_step_button_id = "tw.com.icash.a.icashpay.debuging:id/leftButton"
-        print(f"    -> 等待並點擊 '{final_step_button_id}'")
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, final_step_button_id))
-        ).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((AppiumBy.ID, final_step_button_id))).click()
         print(" -> 已點擊最後的「下一步」")
-
-        # --- ✨ 新增步驟 10: 點擊「下次再說」按鈕 ✨ ---
-        print("\n步驟 10: 點擊 '下次再說' 按鈕...")
-        skip_button_id = "tw.com.icash.a.icashpay.debuging:id/tv_done"
-        print(f"    -> 等待並點擊 '{skip_button_id}'")
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((AppiumBy.ID, skip_button_id))
-        ).click()
-        print(" -> 已點擊「下次再說」")
 
         print("\n註冊流程已全部完成！ ✅")
         time.sleep(5)

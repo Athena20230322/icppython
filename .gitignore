@@ -1,2 +1,8 @@
-"icashpayappinfouat.txt" 
-*.apk
+# 忽略所有 .txt 結尾的臨時檔案
+*.txt
+
+# 忽略 Python 的快取目錄
+__pycache__/
+
+# 忽略其他可能的 log 或設定檔
+icashpayappinfo.txt
