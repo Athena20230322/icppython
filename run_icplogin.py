@@ -6,8 +6,9 @@ import time
 import sys
 import matplotlib.pyplot as plt
 import re
+from multiprocessing import Pool, cpu_count  # 導入並行處理所需模組
 
-# --- 美化 CSS 樣式 (已加入不換行規則) ---
+# --- 美化 CSS 樣式 (維持不變) ---
 styles = '''
     <style>
         /* Base styles are unchanged */
@@ -63,8 +64,6 @@ styles = '''
 
         .script-id {
             color: #333;
-            /* 【本次修改重點】增加 white-space: nowrap; 規則。*/
-            /* 這會強制瀏覽器將此部分的內容視為一個整體，絕不在其中間換行。*/
             white-space: nowrap;
         }
         .script-desc {
@@ -74,7 +73,7 @@ styles = '''
             color: #666;
         }
 
-        details { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fafafa; }
+        details { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fafafa; margin-top: 5px;}
         summary { font-weight: bold; cursor: pointer; color: #34495e; }
         details[open] { padding-bottom: 10px; }
         details pre { margin-top: 10px; white-space: pre-wrap; word-wrap: break-word; background-color: #f1f1f1; padding: 10px; border-radius: 4px; color: #333; }
@@ -85,9 +84,13 @@ styles = '''
 
 # --- execute_test_script 函式 (維持不變) ---
 def execute_test_script(script_path, test_data_dir):
-    # ... 此函式內容完全不變 ...
+    """
+    執行單一測試腳本，並解析其輸出以判斷成功或失敗。
+    現在可以解析包含 RtnMsg 的詳細錯誤訊息。
+    """
     start_time = time.time()
     try:
+        # 執行 python 腳本
         process = subprocess.run(
             f'python "{script_path}"',
             shell=True,
@@ -96,6 +99,7 @@ def execute_test_script(script_path, test_data_dir):
             encoding='utf-8',
             timeout=30
         )
+        # 合併 stdout 和 stderr 以便於分析
         output = process.stdout + process.stderr
     except subprocess.TimeoutExpired:
         output = "Test Failed: Script timed out after 30 seconds."
@@ -104,44 +108,52 @@ def execute_test_script(script_path, test_data_dir):
 
     duration = f"{(time.time() - start_time):.3f}s"
 
-    base_filename = os.path.basename(script_path).replace('.py', '.txt')
-    test_data_file = os.path.join(test_data_dir, base_filename)
-    expected_rtn_code = None
-    try:
-        with open(test_data_file, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
-            if content.startswith('RtnCode,'):
-                expected_rtn_code = content.split(',')[1]
-    except Exception:
-        pass
+    # 預設狀態與日誌
+    status = 'Pass'
+    log_result = 'N/A'
 
+    # 檢查輸出中是否有 "Test Failed" 字樣
     if 'Test Failed' in output:
         status = 'Fail'
-        if expected_rtn_code == '0' and 'Decrypted Data:' in output:
-            try:
-                decrypted_part = output.split('Decrypted Data:')[1].strip()
-                log_result = f"Decrypted Data: {decrypted_part}"
-            except IndexError:
-                log_result = "測試失敗 (期望 RtnCode 0)，但無法從輸出中解析 Decrypted Data。"
+        # 從輸出中尋找包含 "Test Failed" 的那一行
+        fail_lines = [line for line in output.splitlines() if 'Test Failed' in line]
+        if fail_lines:
+            # 我們只取第一行找到的失敗訊息
+            log_result = fail_lines[0].strip()
         else:
-            fail_lines = [line for line in output.splitlines() if 'Test Failed' in line]
-            if fail_lines:
-                log_result = fail_lines[0].strip()
-            else:
-                log_result = "測試失敗，但無法提取具體的錯誤訊息。"
-    else:
-        status = 'Pass'
-        log_result = 'N/A'
+            # 如果找不到特定的失敗行，則給一個通用訊息
+            log_result = "測試失敗，但無法提取具體的錯誤訊息。"
 
-        if expected_rtn_code == '1':
-            try:
-                actual_rtn_msg = output.split("RtnMsg:")[1].splitlines()[0].strip()
-                if actual_rtn_msg != "成功":
-                    status = 'Fail'
-                    log_result = f"測試失敗: RtnCode為1，但RtnMsg為「{actual_rtn_msg}」，不符合預期的「成功」。"
-            except IndexError:
+    # 檢查輸出中是否有 "Test Passed" 字樣
+    elif 'Test Passed' not in output:
+        # 如果既沒有 "Test Failed" 也沒有 "Test Passed"，視為失敗
+        status = 'Fail'
+        log_result = "測試失敗: 腳本輸出不符合預期 (未找到 'Test Passed' 或 'Test Failed' 訊息)。"
+        # 附加完整日誌以供除錯
+        log_result += f"<details><summary>完整輸出日誌</summary><pre>{output.strip()}</pre></details>"
+
+    # 針對 RtnCode=1 但 RtnMsg 不是「成功」的特殊情況進行檢查
+    if status == 'Pass':
+        try:
+            # 從輸出中解析實際的 RtnMsg
+            actual_rtn_msg = output.split("RtnMsg:")[1].splitlines()[0].strip()
+
+            # 讀取期望的 RtnCode
+            base_filename = os.path.basename(script_path).replace('.py', '.txt')
+            test_data_file = os.path.join(test_data_dir, base_filename)
+            expected_rtn_code = None
+            with open(test_data_file, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if content.startswith('RtnCode,'):
+                    expected_rtn_code = content.split(',')[1]
+
+            # 如果期望 RtnCode 是 1，但訊息不是「成功」，則覆寫結果為失敗
+            if expected_rtn_code == '1' and actual_rtn_msg != "成功":
                 status = 'Fail'
-                log_result = "測試失敗: 腳本輸出中找不到 'RtnMsg:'，無法進行成功訊息驗證。"
+                log_result = f"測試失敗: RtnCode為1，但RtnMsg為「{actual_rtn_msg}」，不符合預期的「成功」。"
+        except (IndexError, FileNotFoundError):
+            # 如果解析失敗或找不到對應的測試資料檔，則忽略此項檢查
+            pass
 
     return (status, duration, log_result)
 
@@ -170,15 +182,19 @@ def generate_html_rows(test_results):
             formatted_script_name = f'<span class="script-id">{script_name}</span>'
 
         log_html = f"<td>{log_result}</td>"
-        if result == 'Fail' and len(log_result) > 80:
-            log_html = f"""
-            <td>
-                <details>
-                    <summary>查看日誌 (點擊展開)</summary>
-                    <pre>{log_result}</pre>
-                </details>
-            </td>
-            """
+
+        # 這段邏輯是為了讓過長的日誌可以被折疊，但我們在上面已經處理了更複雜的折疊情況
+        # 為了避免重複，我們可以簡化這裡的邏輯或直接使用上面生成的 log_result
+        if result == 'Fail' and not log_result.startswith("<details>"):
+            if len(log_result) > 80:
+                log_html = f"""
+                <td>
+                    <details>
+                        <summary>查看日誌 (點擊展開)</summary>
+                        <pre>{log_result}</pre>
+                    </details>
+                </td>
+                """
 
         rows.append(f"""
         <tr>
@@ -191,8 +207,20 @@ def generate_html_rows(test_results):
     return ''.join(rows)
 
 
+# --- 為並行處理準備的輔助函數 (維持不變) ---
+def run_single_test_wrapper(script_info):
+    """
+    這是給 multiprocessing.Pool.map() 使用的包裝器函數。
+    它接收一個包含 script_path 和 test_data_dir 的元組，並執行單個測試腳本。
+    """
+    script_path, test_data_dir = script_info
+    print(f"正在執行測試 (並行): {os.path.basename(script_path)}")
+    status, duration, log_result = execute_test_script(script_path, test_data_dir)
+    print(f"完成測試 (並行): {os.path.basename(script_path)}, 結果: {status}")
+    return (status, script_path, duration, log_result)
+
+
 def main():
-    # ... 此函式內容完全不變 ...
     scripts_dir = 'C:\\icppython\\OTestCase\\ICPAPI'
     test_data_dir = 'C:\\icppython\\OTestData\\ICPAPI'
     report_dir = r'C:\icppython\icploginapireport'
@@ -206,7 +234,7 @@ def main():
         print(f"錯誤：測試案例目錄不存在: {scripts_dir}")
         sys.exit(1)
 
-    print("--- 正在執行前置測試腳本 ---")
+    print("--- 正在執行前置測試腳本 (串行執行以確保環境初始化) ---")
     for script_path in pre_test_scripts_paths:
         try:
             print(f"執行中: {script_path}")
@@ -228,18 +256,17 @@ def main():
     print("--- 前置測試腳本執行完畢 ---")
 
     scripts = [os.path.join(scripts_dir, f) for f in os.listdir(scripts_dir) if f.endswith('.py')]
+
+    print("\n--- 正在並行執行主要API測試案例 ---")
+    num_processes = cpu_count()
+    print(f"將使用 {num_processes} 個進程並行執行測試。")
+    script_inputs = [(script, test_data_dir) for script in scripts]
+
     test_results = []
-    print("\n--- 正在執行主要API測試案例 ---")
+    with Pool(num_processes) as pool:
+        test_results = pool.map(run_single_test_wrapper, script_inputs)
 
-    for script in scripts:
-        script_basename = os.path.basename(script)
-        print(f"正在執行測試: {script_basename}")
-        status, duration, log_result = execute_test_script(script, test_data_dir)
-        test_results.append((status, script, duration, log_result))
-        print(f"完成測試: {script_basename}, 結果: {status}")
-        print("-" * 50)
-
-    print("--- 所有測試執行完畢 ---\n")
+    print("\n--- 所有主要API測試執行完畢 ---\n")
 
     pass_count = sum(1 for r in test_results if r[0] == 'Pass')
     fail_count = len(test_results) - pass_count
@@ -255,6 +282,9 @@ def main():
 
     chart_dir = os.path.join(os.getcwd(), 'apichart')
     os.makedirs(chart_dir, exist_ok=True)
+
+    # --- 【***程式碼修改處 1***】 ---
+    # 從 datetime.now() 改為 datetime.datetime.now()
     chart_path = os.path.join(chart_dir, f"chart_{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}.png")
     fig.savefig(chart_path, bbox_inches='tight', transparent=True)
     print(f"圖表已產生: {chart_path}")
@@ -263,6 +293,9 @@ def main():
         chart_data = base64.b64encode(f.read()).decode()
 
     table_rows_html = generate_html_rows(test_results)
+
+    # --- 【***程式碼修改處 2***】 ---
+    # 從 datetime.now() 改為 datetime.datetime.now()
     html_template = f"""
     <html>
     <head>

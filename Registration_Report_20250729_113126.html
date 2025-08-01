@@ -1,0 +1,404 @@
+
+        <!DOCTYPE html>
+        <html lang="zh-Hant">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>iCashPay API 註冊流程報告</title>
+            <style>
+                body { font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+                .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 8px; }
+                h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                .summary { background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #28a745; }
+                .summary p { margin: 5px 0; font-size: 1.1em;}
+                .summary-status { font-size: 1.3em; font-weight: bold; color: #28a745; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; word-wrap: break-word; }
+                th { background-color: #3498db; color: white; }
+                tr:nth-child(even) { background-color: #f9f9f9; }
+                .status-success { color: #28a745; font-weight: bold; }
+                .status-failure { color: #dc3545; font-weight: bold; }
+                details { cursor: pointer; margin-top: 10px; }
+                summary { font-weight: bold; list-style-position: inside; }
+                pre { background-color: #2d2d2d; color: #f2f2f2; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>iCashPay API 註冊流程報告</h1>
+                <div class="summary">
+                    <p><strong>整體狀態:</strong> <span class="summary-status">✅ 成功</span></p>
+                    <p><strong>開始時間:</strong> 2025-07-29 11:31:26</p>
+                    <p><strong>結束時間:</strong> 2025-07-29 11:31:32</p>
+                    <p><strong>總耗時:</strong> 0:00:05</p>
+                </div>
+                <table>
+                    <colgroup>
+                       <col style="width: 5%;">
+                       <col style="width: 25%;">
+                       <col style="width: 10%;">
+                       <col style="width: 15%;">
+                       <col style="width: 45%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>執行動作</th>
+                            <th>狀態</th>
+                            <th>時間戳</th>
+                            <th>詳細資料</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        
+            <tr>
+                <td>1</td>
+                <td>準備階段: 產生動態資料</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:26</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "UserCode": "i1753759886",
+  "UserPwd": "Aa123456",
+  "CellPhone": "0950001676",
+  "Idno": "E159950136",
+  "ConfirmSecPwd": "246790",
+  "DeviceInfo": {
+    "AppName": "002",
+    "DeviceID": "b4f194a637017",
+    "DeviceInfo": "Pixel 7_p1pk",
+    "IsSimulator": "0",
+    "OS": "2"
+  }
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>2</td>
+                <td>金鑰交換 (1/3): GetDefaultPucCert</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:26</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "URL": "https://icp-member-stage.icashpay.com.tw/api/member/Certificate/GetDefaultPucCert"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "RtnCode": 1,
+  "RtnMsg": "成功",
+  "DefaultPubCertID": 1,
+  "DefaultPubCert": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4pgu8gTfBSM1HA69jakqet6YXtyy6ChqrVuhfaYUYLoxogbcz7QGrAAB/eRc4Ft9rdoh2xC4BEqeOqYTmm4mR+EIF+d+SQXPH79DP8QoTiBvZFcfeckGBsOEFkk6W0LGqhXIKXg/pQ1wilfh1iWybBx7j5Teo3X7s6pTIf11GmL8BkjkQvdVeDX8s/bQBtKjRvLIUMROeuUEuWvq3rJP7o5E5n2tyw/IeT91Q7thoj691CQbJetZF0Nnj9pJgSw4u1EyvQDxbjRZkuh6PwRAy5Ik6sJ97ghdlrNAkFilYr8kPJoFdqf9bxNa9YpsjptahWNAGvPKViDNbyq8SuR42QIDAQAB"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>3</td>
+                <td>金鑰交換 (2/3): ExchangePucCert</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:28</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "ClientPubCert": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs7UG4Ri6fKeHH62S811ern5UtKwSBYoTJcFoOOYvvbfly9wO6Fnw7zsVSV83IILFPR+ftNBK5lo3Q6oGvi4xii1G+AJHHVW75PuD5Rw0eRjgi1Ymydidpw/aSzDf1KW+3c6q0ermbcnNZFTUP3Qh/uQWL9l7fqXZF0rgosLB6OAjYUeSDTQkOyAXiVK7dp6Bc8Sg2QW5z3E8Y+F75djghoDrnoy3i+CvKnRBhhYKeJslgd/JuqTDIvvQXTGSq38Pcsn+Qq5AkgD4vhuUTe7+hRUIj+wvzWNxRzhQqaJXGtKisYNQEDvPyD9ZuFyheKLZt7w4Nz5uPHpwRD94YFGY8QIDAQAB",
+  "Timestamp": "2025/07/29 11:31:27",
+  "CertID": 1,
+  "ServerPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4pgu8gTfBSM1HA69jakqet6YXtyy6ChqrVuhfaYUYLoxogbcz7QGrAAB/eRc4Ft9rdoh2xC4BEqeOqYTmm4mR+EIF+d+SQXPH79DP8QoTiBvZFcfeckGBsOEFkk6W0LGqhXIKXg/pQ1wilfh1iWybBx7j5Teo3X7s6pTIf11GmL8BkjkQvdVeDX8s/bQBtKjRvLIUMROeuUEuWvq3rJP7o5E5n2tyw/IeT91Q7thoj691CQbJetZF0Nnj9pJgSw4u1EyvQDxbjRZkuh6PwRAy5Ik6sJ97ghdlrNAkFilYr8kPJoFdqf9bxNa9YpsjptahWNAGvPKViDNbyq8SuR42QIDAQAB"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "ServerPubCert": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5dSNJ0fd1eURCsjwKcjqm2YiwbCZhECz2CLLTMh/aOQiZFWTRpcvvj6Bn3Kdb5GQhtxWum9oo21djM4kTOfwC9To1uXdz74nfZm0PdHVZCKLVFxUV2wwIsqk+l49A+XuxE0BuyoPakPKbv4BvXJcQIh1ZjWJ+OPKmLS4aQtYLl0m8dBtMzSnBIDbBLHbQPMHlBRoi79vy+puXX52IHVqlOCtai+dZSlThe+h56B7IbtYn5Rxmvv24J7Jry2jR4WzYO13HMBfGHUjD2Aij3B9JY0RfFwX67YdnW6gve6EGw3aiA1CDN4vxjfkXU3LyujLCgh23MDNzwP1hE4A8e0PuQIDAQAB",
+  "ServerPubCertID": 263307,
+  "ExpireDate": "2025/07/29 23:31:25",
+  "Timestamp": "2025/07/29 11:30:57"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>4</td>
+                <td>金鑰交換 (3/3): GenerateAES</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:28</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "Timestamp": "2025/07/29 11:31:28"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "EncKeyID": 331550,
+  "AES_Key": "Slx87TTy9LY5n22rFAv33f0cujoN5jq1",
+  "AES_IV": "TpLV59vEtacnziTL",
+  "ExpireDate": "2025/07/30 11:30:57",
+  "Timestamp": "2025/07/29 11:30:57"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>5</td>
+                <td>步驟 1: 設定註冊資訊 (SetRegisterInfo2022)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:28</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:28",
+  "CellPhone": "0950001676",
+  "UserCode": "i1753759886",
+  "UserPwd": "Aa123456"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "AppTokenID": 47320,
+  "LoginTokenID": "FD9A502D92E64471A319C2AF773C4AFB",
+  "LoginTokenExpired": "2025-07-30T11:31:25.68",
+  "RtnCode": 0,
+  "RtnMsg": null
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>6</td>
+                <td>步驟 2: 發送簡訊驗證碼 (SendAuthSMS)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:28</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:28",
+  "CellPhone": "0950001676",
+  "LoginTokenID": "FD9A502D92E64471A319C2AF773C4AFB",
+  "SMSAuthType": "1",
+  "UserCode": ""
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "ExpireRange": 120,
+  "AuthCode": "321448",
+  "Timestamp": "2025/07/29 11:30:58"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>7</td>
+                <td>步驟 3: 驗證簡訊 (CheckRegisterAuthSMS)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:29</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:28",
+  "CellPhone": "0950001676",
+  "LoginTokenID": "FD9A502D92E64471A319C2AF773C4AFB",
+  "AuthCode": "321448"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "MID": 10548070,
+  "AuthErrorCount": 0,
+  "UserCode": "",
+  "Timestamp": "2025/07/29 11:30:58"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>8</td>
+                <td>步驟 4: 身分驗證 (AuthIDNO)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:30</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:29",
+  "LoginTokenID": "FD9A502D92E64471A319C2AF773C4AFB",
+  "Address": "板橋區中山路一段161號",
+  "AreaID": "220",
+  "BirthDay": "2000-01-01",
+  "CName": "測試一",
+  "Email": "i1753759886@test.com",
+  "Idno": "E159950136",
+  "IssueDate": "2020-01-01",
+  "IssueLoc": "65000",
+  "IssueType": "1",
+  "NationalityID": "1206",
+  "fileCols": "img1,img2"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "BankBindScheme": null,
+  "Timestamp": "2025/07/29 11:30:58",
+  "BlnUploadImg": 0
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>9</td>
+                <td>步驟 5: 變更交易密碼 (ChangeSecurityPwd)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:30</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:30",
+  "ConfirmSecPwd": "246790",
+  "NewSecPwd": "246790"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "IsPwdPass": true,
+  "GraphicLock": false,
+  "IsIDNOPass": true,
+  "IsTeenagersPass": 1,
+  "LoginPwdStatus": 0,
+  "SecPwdStatus": 0,
+  "GraphicLockPwdStatus": 0,
+  "SecPwdRtnMsg": "請重新設定安全密碼",
+  "NextStep": 16,
+  "IsDefaultAct": false,
+  "IsReAuth": false,
+  "P55AuthStatus": 0,
+  "P55AuthDateLimit": "2022年8月31日",
+  "IsOpMember": false,
+  "IDCardAuthStatus": 0,
+  "IsRegIdPhoto": false,
+  "IsMinorRegIdPhoto": true,
+  "IsForeignerRegIdPhoto": true,
+  "IsOpExpire": false,
+  "NationalityCode": "TWN",
+  "Timestamp": "2025/07/29 11:30:59"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>10</td>
+                <td>步驟 6: 檢查是否為OP會員 (CheckIsOP)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:30</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:30",
+  "CellPhone": "0950001676"
+}</code></pre>
+                </details>
+                
+                <details>
+                    <summary>Response (解密後)</summary>
+                    <pre><code>{
+  "IsMember": false
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>11</td>
+                <td>步驟 7: 註冊為OP會員 (RegisterOpMember)</td>
+                <td class="status-success">✅ 成功</td>
+                <td>2025-07-29 11:31:32</td>
+                <td>
+                <details>
+                    <summary>Request (解密後)</summary>
+                    <pre><code>{
+  "AppName": "002",
+  "DeviceID": "b4f194a637017",
+  "DeviceInfo": "Pixel 7_p1pk",
+  "IsSimulator": "0",
+  "OS": "2",
+  "Timestamp": "2025/07/29 11:31:30",
+  "CellPhone": "0950001676",
+  "Birthday": "20000101"
+}</code></pre>
+                </details>
+                </td>
+            </tr>
+            
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+        
