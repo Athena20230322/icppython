@@ -4,6 +4,9 @@
 2.run_icpaccountclose 結清帳號，執行API即結清該帳號
 3.icploginapireport->產出報告的資料夾
 4.full_registration_flow.py SIT 執行 API 一鍵註冊
+5.master_nextstep_runner.py
+呈5 執行不同NextStep 狀態
+Next1、Next2、Next4、Next5、Next6、Next9、Next13
 #ICP註冊API 執行順序
 M0003_01
 M0007
