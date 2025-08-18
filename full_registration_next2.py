@@ -470,7 +470,18 @@ class FullFlowApiClient:
             reporter.add_step(current_step, "✅ 成功", payload5, result5)
             print("檢查驗證狀態成功。")
 
-            # --- 舊步驟已移除 ---
+            # --- 【***程式碼修改處***】: 新增的程式碼 ---
+            # 從步驟 4 的回應中提取 NextStep 的值
+            next_step_status = result5.get("NextStep")
+            # 使用分隔線讓輸出更醒目
+            print("\n" + "=" * 25)
+            if next_step_status is not None:
+                # 在主控台印出 NextStep 的狀態
+                print(f"  [狀態檢查] NextStep: {next_step_status}")
+            else:
+                print("  [狀態檢查] 回應中未找到 NextStep 欄位。")
+            print("=" * 25 + "\n")
+            # --- 修改結束 ---
 
             self._log_registration_data(log_data)
             print("\n======= ✅ 全部 5 個步驟流程執行成功！ ✅ =======")
@@ -479,8 +490,13 @@ class FullFlowApiClient:
             print(f"\n======= ❌ 流程執行失敗於: {current_step} ❌ =======")
             print(f"錯誤訊息: {e}")
             error_info = f"Error: {e}\n\nTraceback:\n{traceback.format_exc()}"
-            failed_payload = locals().get(f'payload{current_step[3]}', None) if current_step.startswith(
-                "步驟") else log_data
+            failed_payload = "N/A"
+            try:
+                if "步驟" in current_step:
+                    step_number = current_step.split(' ')[1].replace(':', '')
+                    failed_payload = locals().get(f"payload{step_number}", "N/A")
+            except (IndexError, KeyError):
+                pass
             reporter.add_step(current_step, "❌ 失敗", failed_payload, error_details=error_info)
             print(f"====================================")
 

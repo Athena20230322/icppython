@@ -6,3 +6,15 @@ __pycache__/
 
 # 忽略其他可能的 log 或設定檔
 icashpayappinfo.txt
+
+"icashpayappinfouat.txt" 
+*.apk
+.env
+# 忽略所有 html, json, png 檔案
+*.html
+*.json
+*.png
+
+# 忽略整個 reports 和 apichart 資料夾
+reports/
+apichart/
