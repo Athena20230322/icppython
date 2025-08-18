@@ -8,12 +8,21 @@
 Next1、Next2、Next4、Next5、Next6、Next9、Next13
 #ICP註冊API 執行順序
 M0003_01
-M0007c
+M0007
 M0010
 M0004
+M0012
 M0149 檢查是否為OP會員
 M0150 註冊OP會員
 M0151 取得OP登入連結
-
-
+#ICP外國人註冊
+part1_register.py
+M0003_01
+M0007
+M0010
+M0120 外國人註冊
+M0012
+part2_continue_flow.py
+M0149 檢查是否為OP會員
+M0150 註冊OP會員
 
