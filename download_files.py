@@ -8,6 +8,7 @@ icash Pay APK 版本監控與自動下載腳本
 3. 比較新版本的檔名與本地已存在的檔名。
 4. 如果檔名不同（代表有更新），則下載新版 APK。
 5. 更新時，可選擇性地發送桌面通知與 Slack 通知。
+6. (新增) 將所有版本更新記錄儲存至 version_history.log 檔案。
 """
 import requests
 import os
@@ -72,6 +73,9 @@ ENVIRONMENTS = {
     # 若有其他環境 (如 PROD)，可在此處新增
 }
 
+# 4. (新增) 設定日誌檔案路徑
+LOG_FILE_PATH = r"C:\icppython\version_history.log"
+
 
 # --- (***設定結束***) ---
 
@@ -107,15 +111,29 @@ def setup_driver():
         return None
 
 
+# *** 新增函數 ***
+def log_update_to_file(env_name, old_filename, new_filename):
+    """將版本更新資訊記錄到日誌檔案中"""
+    try:
+        # 確保日誌檔案的目錄存在
+        log_dir = os.path.dirname(LOG_FILE_PATH)
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
+
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # 使用逗號分隔，方便未來解析
+        log_entry = f"{timestamp}, {env_name}, {old_filename}, {new_filename}\n"
+
+        with open(LOG_FILE_PATH, 'a', encoding='utf-8') as f:
+            f.write(log_entry)
+        print(f"{bcolors.OKBLUE}已將更新資訊記錄至 {LOG_FILE_PATH}{bcolors.ENDC}")
+    except Exception as e:
+        print(f"{bcolors.FAIL}寫入日誌檔案失敗: {e}{bcolors.ENDC}")
+
+
 def send_slack_notification(webhook_url, env_name, old_filename, new_filename):
     """
     發送格式化的通知到 Slack。
-
-    Args:
-        webhook_url (str): Slack Webhook URL。
-        env_name (str): 環境類型 (e.g., "SIT", "UAT")。
-        old_filename (str): 舊的檔案名稱。
-        new_filename (str): 新的檔案名稱。
     """
     if not webhook_url:
         print(f"{bcolors.WARNING}警告：未在 .env 檔案中設定 SLACK_WEBHOOK_URL，無法發送 Slack 通知。{bcolors.ENDC}")
@@ -156,13 +174,6 @@ def send_slack_notification(webhook_url, env_name, old_filename, new_filename):
 def find_existing_apk(directory, prefix):
     """
     在指定目錄中尋找符合前綴的已存在 APK 檔案。
-
-    Args:
-        directory (str): 要搜尋的目錄路徑。
-        prefix (str): 檔案名稱的前綴。
-
-    Returns:
-        str or None: 如果找到檔案，返回檔名；否則返回 None。
     """
     if not os.path.isdir(directory):
         return None
@@ -175,12 +186,6 @@ def find_existing_apk(directory, prefix):
 def download_and_compare(env_name, download_url, save_directory, existing_filename):
     """
     從給定的 URL 下載檔案，與現有檔案比對，並在需要時觸發通知。
-
-    Args:
-        env_name (str): 環境類型 (e.g., "SIT", "UAT")。
-        download_url (str): 檔案的直接下載連結。
-        save_directory (str): 儲存檔案的目錄。
-        existing_filename (str or None): 本地已存在的檔案名稱。
     """
     print(f"正在從最終連結下載 [{env_name}] 檔案: {download_url}")
     try:
@@ -190,7 +195,6 @@ def download_and_compare(env_name, download_url, save_directory, existing_filena
         with requests.get(download_url, stream=True, headers=headers, allow_redirects=True, timeout=300) as r:
             r.raise_for_status()
 
-            # 從 HTTP 標頭或 URL 中解析檔名
             detected_filename = None
             content_disposition = r.headers.get('content-disposition')
             if content_disposition:
@@ -205,16 +209,17 @@ def download_and_compare(env_name, download_url, save_directory, existing_filena
                         '.apk') else potential_name
 
             if not detected_filename:
-                detected_filename = f"{env_name.lower()}_downloaded_{int(time.time())}.apk"  # 提供一個唯一的備用檔名
+                detected_filename = f"{env_name.lower()}_downloaded_{int(time.time())}.apk"
 
-            # 核心邏輯：如果檔名存在且與現有檔名不同，則觸發通知
             if existing_filename and detected_filename != existing_filename:
                 title = f"【{env_name}】版本更新通知！"
                 message = f"偵測到新版本！\n舊檔名: {existing_filename}\n新檔名: {detected_filename}"
                 print(f"\n{bcolors.OKCYAN}{'=' * 20} {title} {'=' * 20}{bcolors.ENDC}")
                 print(f"{bcolors.WARNING}{message.replace(chr(10), ' ')}{bcolors.ENDC}\n")
 
-                # 發送桌面通知 (如果 plyer 存在)
+                # *** 新增 ***: 呼叫日誌記錄函數
+                log_update_to_file(env_name, existing_filename, detected_filename)
+
                 if notification:
                     try:
                         notification.notify(title=title, message=message, app_name='icash Pay 監控程式', timeout=20)
@@ -222,10 +227,8 @@ def download_and_compare(env_name, download_url, save_directory, existing_filena
                     except Exception as e:
                         print(f"{bcolors.WARNING}發送桌面通知失敗: {e}{bcolors.ENDC}")
 
-                # 發送 Slack 通知
                 send_slack_notification(SLACK_WEBHOOK_URL, env_name, existing_filename, detected_filename)
 
-                # 刪除舊檔案
                 try:
                     old_filepath = os.path.join(save_directory, existing_filename)
                     if os.path.exists(old_filepath):
@@ -236,15 +239,18 @@ def download_and_compare(env_name, download_url, save_directory, existing_filena
 
             elif existing_filename == detected_filename:
                 print(f"[{env_name}] 版本無變化，檔名相同: {detected_filename}")
-                return  # 版本相同，無需下載，直接結束
+                return
 
-            # 儲存檔案
             local_filepath = os.path.join(save_directory, detected_filename)
             print(f"檔案將儲存至: {local_filepath}")
             with open(local_filepath, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
             print(f"{bcolors.OKGREEN}[{env_name}] 檔案下載/更新成功！{bcolors.ENDC}")
+
+            # 如果是首次下載，也記錄下來
+            if not existing_filename:
+                log_update_to_file(env_name, "無 (首次下載)", detected_filename)
 
     except requests.exceptions.RequestException as e:
         print(f"{bcolors.FAIL}[{env_name}] 檔案下載失敗: {e}{bcolors.ENDC}")
@@ -255,20 +261,14 @@ def download_and_compare(env_name, download_url, save_directory, existing_filena
 def check_environment(env_name, config):
     """
     對單一環境執行完整的檢查、下載與比對流程。
-
-    Args:
-        env_name (str): 環境的名稱 (e.g., "SIT")。
-        config (dict): 該環境的設定字典。
     """
     print(f"--- 開始處理 {env_name} ---")
     initial_url = config["url"]
     save_dir = config["save_dir"]
     prefix = config["prefix"]
 
-    # 建立儲存目錄
     os.makedirs(save_dir, exist_ok=True)
 
-    # 尋找現有檔案
     existing_filename = find_existing_apk(save_dir, prefix)
     if existing_filename:
         print(f"找到現有 {env_name} 檔案: {existing_filename}")
@@ -279,10 +279,10 @@ def check_environment(env_name, config):
     driver = None
     try:
         driver = setup_driver()
-        if not driver:  # 如果 driver 初始化失敗，則跳過此環境
+        if not driver:
             return
 
-        wait = WebDriverWait(driver, 20)  # 增加等待時間
+        wait = WebDriverWait(driver, 20)
         driver.get(initial_url)
 
         print("步驟 1: 正在尋找 'Android版下載' 按鈕...")
@@ -300,7 +300,6 @@ def check_environment(env_name, config):
             print(f"{bcolors.FAIL}錯誤：在 {env_name} 的彈出視窗中獲取到的連結無效。{bcolors.ENDC}")
             return
 
-        # 特殊處理 Dropbox 連結，轉換為直接下載格式
         if 'dl-web.dropbox.com' in final_download_url:
             final_download_url = final_download_url.replace('dl-web.dropbox.com', 'dl.dropboxusercontent.com')
             print("偵測到 Dropbox 連結，已自動轉換為直接下載格式。")
@@ -340,7 +339,7 @@ def main():
         for env_name, config in ENVIRONMENTS.items():
             check_environment(env_name, config)
             print("-" * 40)
-            time.sleep(5)  # 在檢查不同環境之間稍作停頓
+            time.sleep(5)
 
         print("\n--- 本次所有環境檢查完成 ---")
         next_check_time = datetime.now() + timedelta(seconds=CHECK_INTERVAL_SECONDS)
