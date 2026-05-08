@@ -2,33 +2,30 @@
 import subprocess
 import os
 
-REPO_URL = "https://github.com/AdanY-cool/icppython.git"
+REPO_URL = "https://github.com/AdanY-cool/icppython.git"  # 請將 <repo> 替換為你的專案名稱
 
 def ensure_git_remote():
+    # 檢查是否已設定 origin，若無則新增
     remotes = subprocess.run(["git", "remote"], capture_output=True, text=True)
     if "origin" not in remotes.stdout:
         subprocess.run(["git", "remote", "add", "origin", REPO_URL], check=True)
 
 def generate_readme():
-    content = """# icppython
+    content = """# Integrated_QA_Tool
 
-本專案為 iCash Pay (ICP) 相關 API 的 Python 自動化測試腳本。
+自動產生條碼並執行現金儲值的工具。
 
-## 主要功能腳本
+## 使用方式
 
-- run_icplogin.py：執行登入流程，並產出 API 測試報告。
-- run_icpaccountclose.py：結清帳號流程。
-- full_registration_flow.py / full_registration_flowUAT：一鍵註冊本國人會員。
-- master_nextstep_runner.py：註冊後 NextStep 狀態流程。
-- 其他腳本詳見 README.md。
+1. 編輯 `account.txt`，填入帳號資料。
+2. 執行 `Integrated_QA_Tool_GetTopUpBarCode.py`。
+3. 結果會自動寫入 `markettoprefund.txt`。
 
-## 目錄說明
+## 主要檔案
 
-- icploginapireport/：存放登入流程產生的 HTML 測試報告。
-
-## 使用說明
-
-請參閱各腳本說明與 README.md 內容。
+- Integrated_QA_Tool_GetTopUpBarCode.py
+- account.txt
+- markettoprefund.txt
 """
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(content)
@@ -37,7 +34,7 @@ def git_commit_push(commit_msg="Auto commit and push after script execution"):
     ensure_git_remote()
     subprocess.run(["git", "add", "."], check=True)
     subprocess.run(["git", "commit", "-m", commit_msg], check=True)
-    subprocess.run(["git", "push", "origin", "main"], check=True)
+    subprocess.run(["git", "push", "origin", "main"], check=True)  # main 或 master，依你的分支名稱
 
 if __name__ == "__main__":
     generate_readme()
