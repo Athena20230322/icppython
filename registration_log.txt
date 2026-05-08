@@ -359,3 +359,493 @@ ConfirmSecPwd: 246790
 LastAPITimestamp: 2025/08/18 10:16:55
 --------------------------------------------------
 
+--- Execution Time: 2025-08-18 11:29:59 ---
+UserCode: i1755487798
+UserPwd: Aa123456
+CellPhone: 0950001705
+Idno: G203711714
+LastAPITimestamp: 2025/08/18 11:29:59
+--------------------------------------------------
+
+--- Execution Time: 2025-08-18 11:30:06 ---
+UserCode: i1755487801
+UserPwd: Aa123456
+CellPhone: 0950001706
+Idno: B260185564
+LastAPITimestamp: 2025/08/18 11:30:06
+--------------------------------------------------
+
+--- Execution Time: 2025-09-03 17:53:49 ---
+UserCode: i1756893225
+UserPwd: Aa123456
+CellPhone: 0950001707
+Idno: T251867487
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/09/03 17:53:48
+--------------------------------------------------
+
+--- Execution Time: 2025-09-04 16:35:19 ---
+UserCode: i1756974915
+UserPwd: Aa123456
+CellPhone: 0950001708
+Idno: M189104602
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/09/04 16:35:18
+--------------------------------------------------
+
+--- Execution Time: 2025-09-04 17:19:33 ---
+UserCode: i1756977570
+UserPwd: Aa123456
+CellPhone: 0950001709
+Idno: J165188882
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/09/04 17:19:33
+--------------------------------------------------
+
+--- Execution Time: 2025-09-05 10:33:04 ---
+UserCode: i1757039581
+UserPwd: Aa123456
+CellPhone: 0950001710
+Idno: D139645955
+LastAPITimestamp: 2025/09/05 10:33:04
+--------------------------------------------------
+
+--- Execution Time: 2025-09-05 10:33:10 ---
+UserCode: i1757039586
+UserPwd: Aa123456
+CellPhone: 0950001711
+Idno: Z118132595
+LastAPITimestamp: 2025/09/05 10:33:10
+--------------------------------------------------
+
+--- Execution Time: 2025-09-10 09:31:39 ---
+UserCode: i1757467891
+UserPwd: Aa123456
+CellPhone: 0950001712
+Idno: H157800985
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/09/10 09:31:37
+--------------------------------------------------
+
+--- Execution Time: 2025-10-16 11:41:33 ---
+UserCode: i1760586090
+UserPwd: Aa123456
+CellPhone: 0950001713
+Idno: Z167274875
+LastAPITimestamp: 2025/10/16 11:41:33
+--------------------------------------------------
+
+--- Execution Time: 2025-10-16 11:41:39 ---
+UserCode: i1760586095
+UserPwd: Aa123456
+CellPhone: 0950001714
+Idno: V269382155
+LastAPITimestamp: 2025/10/16 11:41:39
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:34:19 ---
+UserCode: i1761626055
+UserPwd: Aa123456
+CellPhone: 0950001715
+Idno: S120885032
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/10/28 12:34:18
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:44:49 ---
+UserCode: i1761626687
+UserPwd: Aa123456
+CellPhone: 0950001716
+Idno: J297773095
+LastAPITimestamp: 2025/10/28 12:44:49
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:46:53 ---
+UserCode: i1761626811
+UserPwd: Aa123456
+CellPhone: 0950001718
+Idno: L199592640
+LastAPITimestamp: 2025/10/28 12:46:53
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:46:57 ---
+UserCode: i1761626815
+UserPwd: Aa123456
+CellPhone: 0950001719
+Idno: Q146147982
+LastAPITimestamp: 2025/10/28 12:46:57
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:58:31 ---
+UserCode: i1761627509
+UserPwd: Aa123456
+CellPhone: 0950001720
+Idno: M180509781
+LastAPITimestamp: 2025/10/28 12:58:31
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 12:58:35 ---
+UserCode: i1761627512
+UserPwd: Aa123456
+CellPhone: 0950001721
+Idno: I284028450
+LastAPITimestamp: 2025/10/28 12:58:35
+--------------------------------------------------
+
+--- Execution Time: 2025-10-28 13:00:11 ---
+UserCode: i1761627609
+UserPwd: Aa123456
+CellPhone: 0950001722
+Idno: S113769470
+LastAPITimestamp: 2025/10/28 13:00:11
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:30:13 ---
+UserCode: i1761719411
+UserPwd: Aa123456
+CellPhone: 0950001732
+Idno: Q115682876
+LastAPITimestamp: 2025/10/29 14:30:13
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:30:19 ---
+UserCode: i1761719415
+UserPwd: Aa123456
+CellPhone: 0950001733
+Idno: A298564663
+LastAPITimestamp: 2025/10/29 14:30:19
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:44:57 ---
+UserCode: i1761720295
+UserPwd: Aa123456
+CellPhone: 0950001734
+Idno: C245456901
+LastAPITimestamp: 2025/10/29 14:44:57
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:45:01 ---
+UserCode: i1761720299
+UserPwd: Aa123456
+CellPhone: 0950001735
+Idno: K161968410
+LastAPITimestamp: 2025/10/29 14:45:01
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:51:41 ---
+UserCode: i1761720700
+UserPwd: Aa123456
+CellPhone: 0950001736
+Idno: O237481768
+LastAPITimestamp: 2025/10/29 14:51:41
+--------------------------------------------------
+
+--- Execution Time: 2025-10-29 14:51:46 ---
+UserCode: i1761720703
+UserPwd: Aa123456
+CellPhone: 0950001737
+Idno: C253798445
+LastAPITimestamp: 2025/10/29 14:51:46
+--------------------------------------------------
+
+--- Execution Time: 2025-12-15 13:48:17 ---
+UserCode: i1765777676
+UserPwd: Aa123456
+CellPhone: 0950001738
+Idno: E207913203
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/12/15 13:48:16
+--------------------------------------------------
+
+--- Execution Time: 2025-12-26 12:01:48 ---
+UserCode: i1766721699
+UserPwd: Aa123456
+CellPhone: 0950001739
+Idno: O163724778
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/12/26 12:01:47
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:17:20 ---
+UserCode: i1767075436
+UserPwd: Aa123456
+CellPhone: 0950001740
+Idno: S299697148
+LastAPITimestamp: 2025/12/30 14:17:20
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:17:28 ---
+UserCode: i1767075442
+UserPwd: Aa123456
+CellPhone: 0950001741
+Idno: Y236452741
+LastAPITimestamp: 2025/12/30 14:17:28
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:19:58 ---
+UserCode: i1767075596
+UserPwd: Aa123456
+CellPhone: 0950001742
+Idno: K187261461
+LastAPITimestamp: 2025/12/30 14:19:58
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:20:03 ---
+UserCode: i1767075600
+UserPwd: Aa123456
+CellPhone: 0950001743
+Idno: J217302814
+LastAPITimestamp: 2025/12/30 14:20:03
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:30:14 ---
+UserCode: i1767076212
+UserPwd: Aa123456
+CellPhone: 0950001744
+Idno: G299344090
+LastAPITimestamp: 2025/12/30 14:30:14
+--------------------------------------------------
+
+--- Execution Time: 2025-12-30 14:30:19 ---
+UserCode: i1767076216
+UserPwd: Aa123456
+CellPhone: 0950001745
+Idno: I227427064
+LastAPITimestamp: 2025/12/30 14:30:19
+--------------------------------------------------
+
+--- Execution Time: 2025-12-31 10:38:33 ---
+UserCode: i1767148710
+UserPwd: Aa123456
+CellPhone: 0950001751
+Idno: V204468607
+LastAPITimestamp: 2025/12/31 10:38:33
+--------------------------------------------------
+
+--- Execution Time: 2025-12-31 10:38:39 ---
+UserCode: i1767148714
+UserPwd: Aa123456
+CellPhone: 0950001752
+Idno: J278062620
+LastAPITimestamp: 2025/12/31 10:38:39
+--------------------------------------------------
+
+--- Execution Time: 2025-12-31 10:48:42 ---
+UserCode: i1767149319
+UserPwd: Aa123456
+CellPhone: 0950001753
+Idno: N287577397
+LastAPITimestamp: 2025/12/31 10:48:42
+--------------------------------------------------
+
+--- Execution Time: 2025-12-31 10:48:47 ---
+UserCode: i1767149324
+UserPwd: Aa123456
+CellPhone: 0950001754
+Idno: F196643799
+LastAPITimestamp: 2025/12/31 10:48:47
+--------------------------------------------------
+
+--- Execution Time: 2025-12-31 10:55:15 ---
+UserCode: i1767149710
+UserPwd: Aa123456
+CellPhone: 0950001755
+Idno: E214521420
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2025/12/31 10:55:13
+--------------------------------------------------
+
+--- Execution Time: 2026-02-13 15:34:54 ---
+UserCode: i1770968091
+UserPwd: Aa123456
+CellPhone: 0950001756
+Idno: F273563870
+LastAPITimestamp: 2026/02/13 15:34:54
+--------------------------------------------------
+
+--- Execution Time: 2026-02-13 15:35:03 ---
+UserCode: i1770968097
+UserPwd: Aa123456
+CellPhone: 0950001757
+Idno: D246205427
+LastAPITimestamp: 2026/02/13 15:35:03
+--------------------------------------------------
+
+--- Execution Time: 2026-02-13 16:48:45 ---
+UserCode: i1770972518
+UserPwd: Aa123456
+CellPhone: 0950001758
+Idno: D130723681
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/02/13 16:48:43
+--------------------------------------------------
+
+--- Execution Time: 2026-03-02 16:16:11 ---
+UserCode: i1772439366
+UserPwd: Aa123456
+CellPhone: 0950001759
+Idno: V284845297
+LastAPITimestamp: 2026/03/02 16:16:11
+--------------------------------------------------
+
+--- Execution Time: 2026-03-02 16:16:31 ---
+UserCode: i1772439378
+UserPwd: Aa123456
+CellPhone: 0950001760
+Idno: L191845340
+LastAPITimestamp: 2026/03/02 16:16:31
+--------------------------------------------------
+
+--- Execution Time: 2026-03-03 14:31:29 ---
+UserCode: i1772519482
+UserPwd: Aa123456
+CellPhone: 0950001761
+Idno: O108349348
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/03/03 14:31:28
+--------------------------------------------------
+
+--- Execution Time: 2026-03-25 09:14:13 ---
+UserCode: i1774401244
+UserPwd: Aa123456
+CellPhone: 0950001762
+Idno: C159146372
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/03/25 09:14:11
+--------------------------------------------------
+
+--- Execution Time: 2026-03-31 11:10:52 ---
+UserCode: i1774926646
+UserPwd: Aa123456
+CellPhone: 0950001770
+Idno: O257833802
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/03/31 11:10:51
+--------------------------------------------------
+
+--- Execution Time: 2026-04-02 09:46:40 ---
+UserCode: i1775094392
+UserPwd: Aa123456
+CellPhone: 0950001771
+Idno: N143309291
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/02 09:46:39
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 14:54:05 ---
+UserCode: i1777013632
+UserPwd: Aa123456
+CellPhone: 0950001774
+Idno: W178988996
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 14:54:00
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 14:54:36 ---
+UserCode: i1777013671
+UserPwd: Aa123456
+CellPhone: 0950001775
+Idno: S213233262
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 14:54:34
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 14:54:47 ---
+UserCode: i1777013683
+UserPwd: Aa123456
+CellPhone: 0950001776
+Idno: J153903628
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 14:54:45
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 14:54:57 ---
+UserCode: i1777013693
+UserPwd: Aa123456
+CellPhone: 0950001777
+Idno: U159679442
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 14:54:55
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 14:55:06 ---
+UserCode: i1777013702
+UserPwd: Aa123456
+CellPhone: 0950001778
+Idno: D192761936
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 14:55:04
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 15:00:52 ---
+UserCode: i1777014049
+UserPwd: Aa123456
+CellPhone: 0950001779
+Idno: W187687895
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 15:00:50
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 15:01:39 ---
+UserCode: i1777014095
+UserPwd: Aa123456
+CellPhone: 0950001780
+Idno: Y227621676
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 15:01:38
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 15:01:50 ---
+UserCode: i1777014106
+UserPwd: Aa123456
+CellPhone: 0950001781
+Idno: T223747498
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 15:01:49
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 15:02:02 ---
+UserCode: i1777014118
+UserPwd: Aa123456
+CellPhone: 0950001782
+Idno: L222360034
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 15:02:00
+--------------------------------------------------
+
+--- Execution Time: 2026-04-24 15:02:11 ---
+UserCode: i1777014126
+UserPwd: Aa123456
+CellPhone: 0950001783
+Idno: Q129225567
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/04/24 15:02:10
+--------------------------------------------------
+
+--- Execution Time: 2026-05-04 11:18:33 ---
+UserCode: i1777864707
+UserPwd: Aa123456
+CellPhone: 0950001784
+Idno: O130124946
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/05/04 11:18:31
+--------------------------------------------------
+
+--- Execution Time: 2026-05-06 12:23:41 ---
+UserCode: i1778041410
+UserPwd: Aa123456
+CellPhone: 0950001785
+Idno: U263596958
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/05/06 12:23:39
+--------------------------------------------------
+
+--- Execution Time: 2026-05-07 16:24:27 ---
+UserCode: i1778142255
+UserPwd: Aa123456
+CellPhone: 0950001787
+Idno: G204248747
+ConfirmSecPwd: 246790
+LastAPITimestamp: 2026/05/07 16:24:25
+--------------------------------------------------
+

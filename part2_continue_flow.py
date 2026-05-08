@@ -111,11 +111,41 @@ class RsaCryptoHelper:
 
     def import_pem_public_key(self, pem_key):
         if not pem_key.strip().startswith(
-            '-----BEGIN'): pem_key = f"-----BEGIN PUBLIC KEY-----\n{pem_key}\n-----END PUBLIC KEY-----"
+                '-----BEGIN'): pem_key = f"-----BEGIN PUBLIC KEY-----\n{pem_key}\n-----END PUBLIC KEY-----"
         self._key = RSA.import_key(pem_key)
 
     def import_pem_private_key(self, pem_key):
         self._key = RSA.import_key(pem_key)
+
+    # === START: ADDED MISSING METHODS ===
+    def encrypt(self, data):
+        key_size_bytes = self._key.size_in_bytes()
+        max_chunk_size = key_size_bytes - 11
+        data_bytes = data.encode('utf-8')
+        encrypted_chunks = []
+        for i in range(0, len(data_bytes), max_chunk_size):
+            chunk = data_bytes[i:i + max_chunk_size]
+            cipher_rsa = PKCS1_v1_5.new(self._key)
+            encrypted_chunks.append(cipher_rsa.encrypt(chunk))
+        return base64.b64encode(b''.join(encrypted_chunks)).decode('utf-8')
+
+    def decrypt(self, enc_data):
+        encrypted_bytes = base64.b64decode(enc_data)
+        key_size_bytes = self._key.size_in_bytes()
+        decrypted_chunks = []
+        for i in range(0, len(encrypted_bytes), key_size_bytes):
+            chunk = encrypted_bytes[i:i + key_size_bytes]
+            cipher_rsa = PKCS1_v1_5.new(self._key)
+            decrypted_chunks.append(cipher_rsa.decrypt(chunk, b'error_sentinel'))
+        if b'error_sentinel' in decrypted_chunks:
+            raise ValueError("RSA 解密失敗。")
+        return b''.join(decrypted_chunks).decode('utf-8')
+
+    def sign_data_with_sha256(self, data):
+        h = SHA256.new(data.encode('utf-8'))
+        return base64.b64encode(pkcs1_15.new(self._key).sign(h)).decode('utf-8')
+
+    # === END: ADDED MISSING METHODS ===
 
     def verify_sign_data_with_sha256(self, data, signature):
         h = SHA256.new(data.encode('utf-8'))
@@ -150,7 +180,7 @@ class FullFlowApiClient:
         self.rsa_helper = RsaCryptoHelper()
         self.session = requests.Session()
         self._server_public_key, self._client_private_key, self._aes_key_id, self._aes_key, self._aes_iv, self._login_token_id = (
-                                                                                                                                 None,) * 6
+                                                                                                                                     None,) * 6
         self.cell_phone = None
         self.common_device_info = None
 
@@ -160,7 +190,6 @@ class FullFlowApiClient:
         if use_aes:
             if not all([self._aes_key, self._aes_iv, self._aes_key_id]): raise Exception("AES 金鑰尚未初始化…")
 
-            # (***程式碼修改處***) 將錯誤的單行賦值拆分為兩行
             aes_helper = AesCryptoHelper(self._aes_key, self._aes_iv)
             enc_data = aes_helper.encrypt(json_payload)
 
@@ -170,6 +199,7 @@ class FullFlowApiClient:
             enc_data = self.rsa_helper.encrypt(json_payload)
             headers = {'X-iCP-DefaultPubCertID': str(payload['CertID'])}
         self.rsa_helper.import_pem_private_key(self._client_private_key)
+        # This line was causing the error, it will now work
         signature = self.rsa_helper.sign_data_with_sha256(enc_data)
         headers['X-iCP-Signature'] = signature
         url = f"{self.base_url}{endpoint}"

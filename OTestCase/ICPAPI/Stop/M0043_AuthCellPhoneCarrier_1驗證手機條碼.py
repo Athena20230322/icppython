@@ -7,8 +7,8 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # --- 檔案路徑設定 ---
 # 將路徑指向 P0010 對應的 postData 和測試資料檔案
-postData_file = "C:\\icppython\\OpostData\\postData28.txt"
-test_data_file = "C:\\icppython\\OTestData\\ICPAPI\\M0043_AuthCellPhoneCarrier_1.txt"
+postData_file = "/OpostData/postData28.txt"
+test_data_file = "/OTestData/ICPAPI/M0043_AuthCellPhoneCarrier_1.txt"
 enc_output_file = "c:\\enc\\Lenc.txt"
 
 try:

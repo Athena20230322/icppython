@@ -12,7 +12,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Util.Padding import pad, unpad
 
 
-# === 加密工具類別 (穩定版本) ===
+# === 加密工具類別 (已對齊函式名稱) ===
 class RsaCryptoHelper:
     def __init__(self):
         self._key = None
@@ -40,10 +40,14 @@ class RsaCryptoHelper:
             enc_bytes = base64.b64decode(enc_data)
             chunks = [enc_bytes[i:i + self._key.size_in_bytes()] for i in
                       range(0, len(enc_bytes), self._key.size_in_bytes())]
-            # 若解密失敗回傳 error 字串
             return b''.join([cipher.decrypt(c, b'error') for c in chunks]).decode('utf-8')
         except:
             return "error"
+
+    def sign(self, data):
+        """將此函式名稱統稱為 sign 以供後方調用"""
+        h = SHA256.new(data.encode('utf-8'))
+        return base64.b64encode(pkcs1_15.new(self._key).sign(h)).decode('utf-8')
 
 
 class AesCryptoHelper:
@@ -75,7 +79,6 @@ class IcashPayBatchFullProcess:
         return datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
     def _safe_api_call(self, response_json, decrypt_func):
-        """檢查 API 回應，若 JSON 解析失敗會印出原始解密內容"""
         if not isinstance(response_json, dict) or 'EncData' not in response_json:
             msg = response_json.get('RtnMsg', '未知錯誤') if isinstance(response_json, dict) else "非預期格式回應"
             return False, msg
@@ -87,8 +90,7 @@ class IcashPayBatchFullProcess:
         try:
             return True, json.loads(dec)
         except json.JSONDecodeError:
-            # 針對 'Expecting value' 錯誤的偵錯輸出
-            print(f"   ⚠️ 解密內容非 JSON 格式，內容如下:\n{dec}")
+            print(f"   ⚠️ 解析失敗，內容為: {dec[:100]}")
             return False, "解密內容 JSON 解析失敗"
 
     def _init_security(self):
@@ -101,28 +103,28 @@ class IcashPayBatchFullProcess:
         rsa_tool.import_key(def_pub)
         enc_exch = rsa_tool.encrypt(json.dumps({'ClientPubCert': pub_oneline, 'Timestamp': self._get_ts()}))
         rsa_tool.import_key(kp['private_key'])
-        sig_exch = rsa_tool.sign(enc_exch)
+        sig_exch = rsa_tool.sign(enc_exch)  # 使用修正後的 sign
 
         res_exch = self.session.post(f"{self.member_url}api/member/Certificate/ExchangePucCert",
                                      data={'EncData': enc_exch},
                                      headers={'X-iCP-DefaultPubCertID': str(def_id),
                                               'X-iCP-Signature': sig_exch}).json()
         success, exch_data = self._safe_api_call(res_exch, rsa_tool.decrypt)
-        if not success: raise ValueError(f"ExchangeCert 失敗: {exch_data}")
+        if not success: raise ValueError(f"握手(1)失敗: {exch_data}")
 
         rsa_tool.import_key(exch_data['ServerPubCert'])
         enc_aes = rsa_tool.encrypt(json.dumps({'Timestamp': self._get_ts()}))
         rsa_tool.import_key(kp['private_key'])
-        sig_aes = rsa_tool.sign(enc_aes)
+        sig_aes = rsa_tool.sign(enc_aes)  # 使用修正後的 sign
 
         res_aes = self.session.post(f"{self.member_url}api/member/Certificate/GenerateAES",
                                     data={'EncData': enc_aes},
                                     headers={'X-iCP-ServerPubCertID': str(exch_data['ServerPubCertID']),
                                              'X-iCP-Signature': sig_aes}).json()
         success, aes_final = self._safe_api_call(res_aes, rsa_tool.decrypt)
-        if not success: raise ValueError(f"GenerateAES 失敗: {aes_final}")
+        if not success: raise ValueError(f"握手(2)失敗: {aes_final}")
 
-        print("   ⏳ 握手完成，等待伺服器同步 5 秒...")
+        print("   ⏳ 握手完成，等待同步 5 秒...")
         time.sleep(5)
         return aes_final, kp['private_key']
 
@@ -138,7 +140,7 @@ class IcashPayBatchFullProcess:
 
         for i in range(len(df)):
             user_code, phone = df.at[i, 'UserCode'], df.at[i, 'CellPhone']
-            print(f"\n>>> 帳號處理中: {user_code}")
+            print(f"\n>>> 帳號處理: {user_code}")
 
             self.session = requests.Session()
             try:
@@ -157,7 +159,6 @@ class IcashPayBatchFullProcess:
                                                     'X-iCP-Signature': rsa_tool.sign(enc_tk)}).json()
                 success, tk_data = self._safe_api_call(res_tk, aes_tool.decrypt)
                 if not success: raise ValueError(tk_data)
-
                 tk_val = tk_data.get("LoginTokenID", "").split(',')[0]
                 df.at[i, 'LoginTokenID'] = tk_val
 
@@ -208,14 +209,14 @@ class IcashPayBatchFullProcess:
 
                 df.at[i, 'Barcode'] = barcode
                 df.to_csv(self.file_path, index=False, sep=',', encoding='utf-8-sig')
-                print(f"   ✅ 完成，條碼: {barcode}")
+                print(f"   ✅ 完成，Barcode: {barcode}")
 
             except Exception as e:
-                print(f"   ❌ 發生中斷: {str(e)}")
+                print(f"   ❌ 失敗: {str(e)}")
 
             time.sleep(1)
 
-        print(f"\n批次任務結束，檔案已存檔。")
+        print(f"\n批次結束。")
 
 
 if __name__ == '__main__':

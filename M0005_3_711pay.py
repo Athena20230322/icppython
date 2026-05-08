@@ -14,6 +14,11 @@ from Crypto.Util.Padding import pad, unpad
 SESSION_FILE = "C:\\icppython\\session_cache.json"
 BARCODE_FILE = "C:\\icppython\\barcode.txt"
 POST_DATA_DIR = "C:\\icppython\\OpostData"
+# ================= 修改點 1: 新增帳號配置檔案路徑 =================
+CONFIG_FILE = "C:\\icppython\\current_user.json"
+
+
+# =============================================================
 
 
 class RsaCryptoHelper:
@@ -150,7 +155,8 @@ class CertificateApiClient:
         self.rsa_helper.import_pem_private_key(client_priv)
         signature = self.rsa_helper.sign_data_with_sha256(enc_data)
         headers = {header_name: str(cert_id), 'X-iCP-Signature': signature}
-        response = self.session.post(f"{self.member_base_url}{action}", data={'EncData': enc_data}, headers=headers)
+        url = f"{self.member_base_url}{action}"
+        response = self.session.post(url, data={'EncData': enc_data}, headers=headers)
         return response.text, response.headers.get('X-iCP-Signature')
 
     def _call_normal_api(self, base_url, action, payload, filename=None):
@@ -182,20 +188,43 @@ class CertificateApiClient:
             print(f"API 呼叫失敗: {e}")
             return None
 
+    # ================= 修改點 2: login_process 改為讀取配置檔案 =================
     def login_process(self):
         self.generate_aes()
+
+        # 讀取當前切換的帳號資料
+        try:
+            if os.path.exists(CONFIG_FILE):
+                with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                    user_info = json.load(f)
+            else:
+                # 預設後備值
+                user_info = {"UserCode": "i1753422584", "CellPhone": "0950001657"}
+        except Exception as e:
+            print(f"讀取帳號配置失敗，使用預設值。錯誤: {e}")
+            user_info = {"UserCode": "i1753422584", "CellPhone": "0950001657"}
+
+        print(f"正在執行登入，帳號 (UserCode): {user_info['UserCode']}")
+
         with open("C:\\icppython\\authcode.txt", 'r') as f:
             auth_code = f.read().strip()
+
         payload = {
             "Timestamp": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-            "LoginType": "1", "UserCode": "i1753422584", "UserPwd": "Aa123456", "SMSAuthCode": auth_code
+            "LoginType": "1",
+            "UserCode": user_info['UserCode'],  # 從原本寫死的 "i1753422584" 改為變數
+            "UserPwd": "Aa123456",
+            "SMSAuthCode": auth_code
         }
+
         res = self._call_normal_api(self.member_base_url, "app/MemberInfo/UserCodeLogin2022", payload)
         if isinstance(res, dict) and (res.get("RtnCode") == 1 or "EncData" in res):
-            print("登入成功")
+            print("✅ 登入成功")
             self.save_session()
         else:
-            raise Exception(f"登入失敗: {res}")
+            raise Exception(f"❌ 登入失敗: {res}")
+
+    # =============================================================================
 
     def run_specified_requests(self):
         def get_ts():
@@ -229,7 +258,7 @@ class CertificateApiClient:
         else:
             print("\n❌ 無法取得 PayID，跳過 P0001")
 
-        # M0132 (修改點：這裡將 ChangeOpPointSwitch 設為 False)
+        # M0132
         print("\n=== 執行: M0132_ChangeMemberPointSwitch (OFF) ===")
         m0132_payload = {
             "ChangeOpPointSwitch": False,

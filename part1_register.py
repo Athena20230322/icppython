@@ -126,7 +126,7 @@ def generate_final_valid_old_arc_id():
     return f"{l1_char}{l2_char}{middle_digits_str}{checksum}"
 
 
-def get_next_phone_number(start_number=980001817):
+def get_next_phone_number(start_number=980002817):
     try:
         os.makedirs(os.path.dirname(LAST_PHONE_FILE), exist_ok=True)
         with open(LAST_PHONE_FILE, 'r') as f:
@@ -354,7 +354,7 @@ class FullFlowApiClient:
             current_step = "步驟 4: 外國人身分驗證 (AuthUniformID)"
             payload4 = {**self.common_device_info, "Timestamp": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                         "LoginTokenID": self._login_token_id, "CName": "外國人測試", "EnName": "JohnTest",
-                        "Idno": id_no, "NationalityID": "1206", "BirthDay": "2000-01-01",
+                        "Idno": id_no, "NationalityID": "1000", "BirthDay": "2000-01-01",
                         "UniformIssueDate": "2024-01-01", "UniformExpireDate": "", "UniformNumber": "F160000001",
                         "UniformPermanentType": True, "fileCols": "img1,img2"}
             img1_path, img2_path = os.path.join(BASE_PATH, 'img1.png'), os.path.join(BASE_PATH, 'img2.png')

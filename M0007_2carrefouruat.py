@@ -209,7 +209,7 @@ class CertificateApiClient:
     def refresh_login_token(self):
         """執行完整序列以獲取更新的登入權杖。"""
         self.generate_aes()
-        target_phone = self._read_config("cellphone.txt", "0976109035")
+        target_phone = self._read_config("cellphone.txt", "0976109034")
         url = "app/MemberInfo/RefreshLoginToken"
         payload = {
             'Timestamp': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
@@ -234,7 +234,7 @@ class CertificateApiClient:
         with open(token_file, 'r') as f:
             login_token_id = f.read().strip()
 
-        target_phone = self._read_config("cellphone.txt", "0976109035")
+        target_phone = self._read_config("cellphone.txt", "0976109034")
         url = "app/MemberInfo/SendAuthSMS"
         payload = {
             "Timestamp": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
