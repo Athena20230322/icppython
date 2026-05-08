@@ -2,7 +2,7 @@
 import subprocess
 import os
 
-REPO_URL = "https://github.com/AdanY-cool/icppython.git"
+REPO_URL = "https://github.com/AdanY-cool/icppython_copilot.git"
 
 def ensure_git_remote():
     # 取得現有 remote
