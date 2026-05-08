@@ -2,10 +2,21 @@
 import subprocess
 import os
 
-REPO_URL = "https://github.com/AdanY-cool/icppython.git"  # 請將 <repo> 替換為你的專案名稱
+REPO_URL = "https://github.com/AdanY-cool/icppython.git"
 
 def ensure_git_remote():
-    # 檢查是否已設定 origin，若無則新增
+    # 取得現有 remote
+    remotes = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True)
+    if "origin" in remotes.stdout:
+        # 取得 origin 的 URL
+        lines = remotes.stdout.splitlines()
+        for line in lines:
+            if line.startswith("origin"):
+                if REPO_URL not in line:
+                    # 先移除舊的 origin
+                    subprocess.run(["git", "remote", "remove", "origin"], check=True)
+                    break
+    # 確保 origin 指向正確 repo
     remotes = subprocess.run(["git", "remote"], capture_output=True, text=True)
     if "origin" not in remotes.stdout:
         subprocess.run(["git", "remote", "add", "origin", REPO_URL], check=True)
@@ -34,7 +45,7 @@ def git_commit_push(commit_msg="Auto commit and push after script execution"):
     ensure_git_remote()
     subprocess.run(["git", "add", "."], check=True)
     subprocess.run(["git", "commit", "-m", commit_msg], check=True)
-    subprocess.run(["git", "push", "origin", "main"], check=True)  # main 或 master，依你的分支名稱
+    subprocess.run(["git", "push", "origin", "main"], check=True)
 
 if __name__ == "__main__":
     generate_readme()
