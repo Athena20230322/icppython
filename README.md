@@ -80,5 +80,7 @@ c:\icppthon\locust_iyugo_final.py -->使用此 account+iyugo.txt
 locust -f locust_iyugo_final.py  -->隨時取壓力測試
 
 #財金正掃付款_462聯合勸募QR P0037~P0039
-
 Integrated_QA_Tool_P0039.py
+
+#財金正掃付款_多個正掃Qrcode依序執行
+Integrated_QA_Toolmultiple_P0039
