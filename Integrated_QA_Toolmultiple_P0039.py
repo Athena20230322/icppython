@@ -11,7 +11,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Util.Padding import pad, unpad
 
 
-# --- 1. 加密輔助類別 (保持不變) ---
+# --- 1. 加密輔助類別 ---
 class CryptoHelper:
     def __init__(self):
         self._rsa_private_key = None
@@ -173,7 +173,7 @@ def process_p0039_flow():
 
         print(f"\n===== [帳號 {idx}] {phone} 開始處理 =====")
 
-        # --- [Step 1-3: 登入流程 (每個帳號做一次)] ---
+        # --- [Step 1-3: 登入流程] ---
         new_token, new_auth = "N/A", "N/A"
         res_token = client.call_api(client.member_url, "app/MemberInfo/RefreshLoginToken",
                                     {"Timestamp": "", "CellPhone": phone})
@@ -195,7 +195,7 @@ def process_p0039_flow():
 
                     # 內層迴圈：遍歷所有 QR Code 連結
                     for q_idx, qr_string in enumerate(qr_links, 1):
-                        print(f"  --> [QR 任務 {q_idx}] 正在處理連結...")
+                        print(f"  --> [QR 任務 {q_idx}] 正在處理...")
 
                         qr_item_name, qr_bill_no, qr_amount = "N/A", "N/A", "0"
                         order_status, trade_no, current_seq, p0039_status = "Failed", "N/A", "N/A", "N/A"
@@ -218,10 +218,20 @@ def process_p0039_flow():
                                 current_charge = str(b.get("Charge", "0"))
                                 current_seq = str(b.get("SeqNo", ""))
 
-                                # --- [Step 5: P0038 CreateOrder] ---
+                                # --- [新增判斷：針對特定 QR 修改金額為 50] ---
+                                # 判斷條件：ItemName 包含 "機關臨櫃" 或原始字串包含相關編碼
+                                if "機關臨櫃" in qr_item_name or "%e6%a9%9f%e9%97%9c%e8%87%a8%e6%ab%83" in qr_string.lower():
+                                    print(f"    [!] 偵測到特定項目，強制修改金額為 50 (原金額: {qr_amount})")
+                                    qr_amount = "50"
+
+                                # --- [Step 5: P0038 CreateOnlinePaymentOrder] ---
                                 order_payload = {
-                                    "Timestamp": "", "Amount": qr_amount, "BillNo": qr_bill_no,
-                                    "Charge": current_charge, "SeqNo": current_seq, "acqInfo": dynamic_acq_info,
+                                    "Timestamp": "",
+                                    "Amount": qr_amount,
+                                    "BillNo": qr_bill_no,
+                                    "Charge": current_charge,
+                                    "SeqNo": current_seq,
+                                    "acqInfo": dynamic_acq_info,
                                     "deadline": ""
                                 }
                                 res_order = client.call_api(client.payment_url, "app/Fisc/CreateOnlinePaymentOrder",
@@ -246,13 +256,13 @@ def process_p0039_flow():
 
                                     if res_charge.get("RtnCode") == 1:
                                         p0039_status = "Success"
-                                        print(f"    [✔] 成功: {qr_item_name} | 金額: {qr_amount} | 序號: {trade_no}")
+                                        print(f"    [✔] 成功: {qr_item_name} | 金額: {qr_amount} | 交易號: {trade_no}")
                                     else:
                                         p0039_status = f"Failed({res_charge.get('RtnCode')})"
                                 else:
                                     order_status = f"Failed({res_order.get('RtnCode')})"
 
-                        # 每一筆 QR 的結果都記錄一行
+                        # 記錄每一筆任務結果
                         final_output_rows.append(
                             [user_code, phone, new_token, new_auth, qr_item_name, qr_bill_no, qr_amount, current_seq,
                              order_status, trade_no, p0039_status])
@@ -265,13 +275,13 @@ def process_p0039_flow():
         else:
             print(f"  [!] Token 失敗: {res_token.get('RtnMsg')}")
 
-    # 寫回結果檔案
+    # 寫回檔案
     with open(ACCOUNT_FILE, 'w', encoding='utf-8') as f:
         f.write(header_str + "\n")
         for row in final_output_rows:
             f.write(",".join(map(str, row)) + "\n")
 
-    print(f"\n[*] 全部處理完畢，共處理 {len(final_output_rows)} 筆任務。結果已存入 {ACCOUNT_FILE}")
+    print(f"\n[*] 全部處理完畢，結果已存入 {ACCOUNT_FILE}")
 
 
 if __name__ == '__main__':
