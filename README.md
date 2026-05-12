@@ -70,3 +70,15 @@
 ```shell
 # 產出條碼並執行現金儲值
 python Integrated_QA_Tool_GetTopUpBarCode.py
+
+Integrated_QA_Tool-->產反掃付款資料後，再執行 locustfile.py
+locust -f  locustfile.py
+
+Integrated_QA_Tool_iyugo.py-->產資料 -->使用此 accountonly.txt 
+
+c:\icppthon\locust_iyugo_final.py -->使用此 account+iyugo.txt
+locust -f locust_iyugo_final.py  -->隨時取壓力測試
+
+#財金正掃付款_462聯合勸募QR P0037~P0039
+
+Integrated_QA_Tool_P0039.py
