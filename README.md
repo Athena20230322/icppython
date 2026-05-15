@@ -71,8 +71,21 @@
 # 產出條碼並執行現金儲值
 python Integrated_QA_Tool_GetTopUpBarCode.py
 
+目前產生記錄如下
+>>> 任務開始：9 個帳號，預計產出 450 筆條碼
+========================================
+🏁 處理完成！
+⏱️  總執行時間: 15.00 秒
+📊 實際產出筆數: 450 筆
+🚀 平均產出速度: 29.99 筆/秒
+========================================
+預估產出7萬2千筆，時間約為40分鐘
+
+Integrated_QA_ToolMultithreading.py -->多執行緒產付款條碼
+
 Integrated_QA_Tool-->產反掃付款資料後，再執行 locustfile.py
 locust -f  locustfile.py
+locust -f  locustfilePart2.py
 
 Integrated_QA_Tool_iyugo.py-->產資料 -->使用此 accountonly.txt 
 
@@ -83,4 +96,5 @@ locust -f locust_iyugo_final.py  -->隨時取壓力測試
 Integrated_QA_Tool_P0039.py
 
 #財金正掃付款_多個正掃Qrcode依序執行
-Integrated_QA_Toolmultiple_P0039
+Integrated_QA_Toolmultiple_P0039.py
+P0037~P0039 
